@@ -50,7 +50,7 @@ MINI2 = ["SEANCE", "GALLOWS", "DEAD WHEEL", "RAVEN RAIN", "GHOULS", "THE COUNT",
 
 # the title menu and the bonus stage select (TX_T_* in Bonus.h, in this order)
 UI = ["CONTINUE  R%d", "NEW RUN", "BONUS", "TURBO TERROR", "BONUS STAGES", "A: PLAY", "B: BACK",
-      "MUSIC  %s", "EFFECTS  %s", "CARD  %s", "INDEX  %s", "SONG  %d", "SONG  %s", "EQ  %s", "OFF", "ON", "FULL", "CALM",   # the pause menu (a setting's value picks the line: 0 OFF, 1 ON)
+      "MUSIC  %s", "EFFECTS  %s", "CARD SIZE  %s", "CORNERS  %s", "SONG  %d", "SONG  %s", "TONE  %s", "OFF", "ON", "FULL", "CALM",   # the pause menu (a setting's value picks the line: 0 OFF, 1 ON)
       "TIME!", "SCORE %ld", "BEST %ld", "NEW BEST!", "SURVIVED", "CAUGHT!", "PRESS A",                                  # after a timed play
       "RIGHT %d  WRONG %d", "YOU %d  DEALER %d", "PAIRS %d  MISSES %d/4",                                              # the stages' scores
       "RED RITE", "BLACKOUT", "DAMNED", "DEAD KINGS",                                                                   # the combos (Rules.h)
@@ -70,8 +70,8 @@ SELL = ["YOUR CARDS", "SELL OR THROW?", "NOTHING TO SELL", "SELL $%d", "THROW", 
 
 # block 0: the wild cards' names, then SHOP; block 1: what the first JSPLIT wild cards do, then CALM; block 2: BONUS; block 3: MINI; block 4: UI;
 # block 5: what the rest do; block 6: SELL; block 7: MINI2; block 8: DEAL2
-# block 9: the COLORS page's lines and the options' names; block 10: the colours themselves (bytes, not text: tools/colours.py)
+# block 9: the COLORS page's lines; block 10: the options' names; block 11: the colours themselves (bytes, not text: tools/colours.py)
 import colours
-COLORS = colours.strings()[0]
-GROUPS = [[n for n, _ in JOKERS] + SHOP, [d for _, d in JOKERS[:JSPLIT]] + CALM, BONUS, MINI, UI, [d for _, d in JOKERS[JSPLIT:]], SELL, MINI2, DEAL2, COLORS,
+COLORS, COLVALS = colours.strings()[:2]
+GROUPS = [[n for n, _ in JOKERS] + SHOP, [d for _, d in JOKERS[:JSPLIT]] + CALM, BONUS, MINI, UI, [d for _, d in JOKERS[JSPLIT:]], SELL, MINI2, DEAL2, COLORS, COLVALS,
           colours.data()[0]]

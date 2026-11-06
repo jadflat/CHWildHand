@@ -6,7 +6,7 @@
 // Every third round is a boss round with a twist, beaten bosses open a timed bonus stage, hands level up as you play
 // them, and after round 8 the run can go on, endless. The title also offers a 60-second TURBO arcade.
 #include <CHGame.h>
-#pragma GCC optimize("no-jump-tables","no-caller-saves","reorder-blocks","reorder-blocks-algorithm=stc","no-tree-loop-im","no-schedule-insns2","no-move-loop-invariants","no-lra-remat","no-tree-forwprop","no-tree-dominator-opts","no-shrink-wrap")   // (the last seven: measured smaller)
+#pragma GCC optimize("no-jump-tables","no-caller-saves","reorder-blocks","reorder-blocks-algorithm=stc","no-tree-loop-im","no-schedule-insns2","no-move-loop-invariants","no-lra-remat","no-tree-forwprop","no-tree-dominator-opts","no-shrink-wrap","no-ira-hoist-pressure","no-ipa-pure-const","no-partial-inlining")   // (the last seven: measured smaller)
 
 enum { HANDN = 8, JMAX = 5, ROUNDS = 8, PLAYS = 4, DISCS = 3 };
 enum State : uint8_t { TITLE, PLAY, RESULT, SHOP, OVER, WON, PAUSED, DEAL, BONUS, TIMEUP, MINI, BSEL };
@@ -274,6 +274,10 @@ enum { PL_SAVE = 15, PL_QUIT, PL_N };   // the pause menu's lines: 0 RESUME, 1..
 static_assert(synth::EQS == 9, "OPTM in tools/tables.py");
 
 static void update() {
+    static uint8_t hc;                                       // frames LEFT or RIGHT has been held: after 12, a step every 4th (the hand and shop cursors)
+    const uint8_t hd = chgame.buttons() & (LEFT_BUTTON | RIGHT_BUTTON);
+    hc = hd ? hc + 1 : 0;
+    const uint8_t hr = hc > 11 && !(hc & 3) ? hd : 0;
     const uint8_t p = chgame.justPressedMask() & 63;      // the buttons that went down this frame (not START or SELECT)
     const bool a = p & A_BUTTON, bb = p & B_BUTTON, up = p & UP_BUTTON, dn = p & DOWN_BUTTON, lf = p & LEFT_BUTTON, rt = p & RIGHT_BUTTON;
     rnd();
@@ -334,7 +338,7 @@ static void update() {
         if ((a && timer > 8) || (timer >= 150 && boss == 255)) { state = PLAY; timer = 0; }
         break;
     case PLAY:
-        nav(cur, nHand - 1, lf, rt);
+        nav(cur, nHand - 1, lf | hr & LEFT_BUTTON, rt | hr & RIGHT_BUTTON);
         if (dn && !timed) { showLv = true; playSfx(Sfx::Flick); }
         if (a && nHand) {
             if (sel[cur]) { sel[cur] = false; playSfx(Sfx::Drop); }
@@ -394,7 +398,7 @@ static void update() {
         }
         break;
     case SHOP: {
-        const bool l2 = lf | up, r2 = rt | dn;
+        const bool l2 = lf | up | hr & LEFT_BUTTON, r2 = rt | dn | hr & RIGHT_BUTTON;
         if (shopMode == 0) {
             nav(shopSel, shopN + 1, l2, r2);
             if (bb) { if (nJok) { shopMode = 1; ownSel = 0; note = 0; playSfx(Sfx::Flick); } else playSfx(Sfx::No); }   // B: your cards

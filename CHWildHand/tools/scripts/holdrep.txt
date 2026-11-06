@@ -1,0 +1,15 @@
+say Z 99
+wait 30
+tap A
+wait 10
+tap A
+wait 60
+snap h0
+hold RIGHT
+wait 6
+snap h6
+wait 10
+snap h16
+wait 20
+snap h36
+release

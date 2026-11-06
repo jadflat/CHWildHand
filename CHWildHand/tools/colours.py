@@ -19,13 +19,19 @@ REDS = [('RED', (250, 52, 56)), ('ORANGE', (255, 128, 16)), ('PINK', (255, 96, 1
         ('VIOLET', (176, 112, 255)), ('BLUE', (60, 140, 255))]
 # the black suits: name, ideal on a light face (P_INK, also the outlines everywhere: kept dark), ideal on a dark face (P_SHADE)
 BLACKS = [('MONO', (18, 12, 22), (132, 136, 148)), ('PURE', (0, 0, 0), (250, 250, 250)), ('BLUE', (14, 30, 110), (120, 180, 255)),
-          ('GREEN', (6, 56, 22), (120, 230, 150)), ('BROWN', (64, 32, 8), (236, 196, 130)), ('CYAN', (0, 64, 72), (110, 230, 240))]
+          ('GREEN', (6, 56, 22), (120, 230, 150)), ('BROWN', (64, 32, 8), (236, 196, 130)), ('CYAN', (0, 64, 72), (110, 230, 240)),
+          ('MONO ALL', (18, 12, 22), (18, 12, 22)), ('PURE ALL', (0, 0, 0), (0, 0, 0))]   # (the last two stay dark on every face, readable or not: set by hand)
+RAWK = 6                              # BLACKS from this index on are used as they are on every face
 # the highlight (the picked card's gold frame and the menus' bars: P_GOLD) and its glow (the cursor's outline, glints: P_GLOW)
-HILITES = [('GOLD', (214, 146, 50), (255, 212, 128)), ('SILVER', (176, 184, 198), (244, 248, 255)), ('CYAN', (40, 184, 210), (160, 244, 255)),
-           ('LIME', (130, 204, 60), (214, 255, 150)), ('PINK', (232, 98, 178), (255, 186, 230))]
+HILITES = [('DK RED', (150, 24, 30), (236, 96, 90)), ('SILVER', (176, 184, 198), (244, 248, 255)), ('CYAN', (40, 184, 210), (160, 244, 255)),
+           ('LIME', (130, 204, 60), (214, 255, 150)), ('PINK', (232, 98, 178), (255, 186, 230)),
+           ('CHAR', (70, 70, 78), (150, 154, 166)), ('RED', (220, 40, 44), (255, 120, 110)), ('ORANGE', (240, 120, 20), (255, 190, 110)),
+           ('WHITE', (240, 240, 240), (255, 255, 255)), ('VIOLET', (150, 96, 230), (214, 180, 255)), ('GOLD', (214, 146, 50), (255, 212, 128))]   # (the old default GOLD moved to the end; new ones at the end: saved indices keep)
 # the accents: the faces' edge rules and studs (P_GOLDDK) and the card backs (P_WINE)
 ACCENTS = [('BRASS', (106, 62, 24), (72, 14, 26)), ('STEEL', (78, 92, 112), (22, 32, 70)), ('JADE', (36, 104, 70), (12, 52, 36)),
-           ('VIOLET', (100, 60, 140), (50, 20, 76))]
+           ('VIOLET', (100, 60, 140), (50, 20, 76)),
+           ('BLACK', (34, 34, 40), (14, 14, 18)), ('RED', (150, 26, 26), (92, 10, 14)), ('BLUE', (40, 80, 170), (16, 36, 100)),
+           ('ORANGE', (182, 98, 20), (100, 44, 10)), ('GREY', (150, 150, 158), (56, 56, 66))]
 # the THEME presets: name, then FACE, RED, BLACK, HILITE, ACCENT (indices). 0 is the default (all 0): THEME BONE resets the colours.
 # Every preset has red and black suits (RED 0, BLACK MONO or PURE); RG SAFE's pure black on white keeps them apart for protan and
 # deutan eyes too (colcheck.py: dE 35 / 54). At most eight presets: the THEME is saved in three bits (sv.music bits 5-7).
@@ -34,12 +40,12 @@ ACCENTS = [('BRASS', (106, 62, 24), (72, 14, 26)), ('STEEL', (78, 92, 112), (22,
 PRESETS = [('BONE', 0, 0, 0, 0, 0),
            ('NOIR', 2, 0, 0, 1, 1),
            ('NAVY', 5, 0, 0, 1, 1),
-           ('FOREST', 6, 0, 0, 0, 2),
-           ('WINE', 8, 0, 0, 0, 0),
+           ('FOREST', 6, 0, 0, 10, 2),
+           ('WINE', 8, 0, 0, 10, 0),
            ('RG SAFE', 1, 0, 1, 2, 1),
            ('BY SAFE', 3, 0, 1, 1, 1),
            ('HI-CON', 2, 0, 1, 3, 0)]
-LABELS = ['THEME  %s', 'FACE  %s', 'RED  %s', 'BLACK  %s', 'HILITE  %s', 'ACCENT  %s']   # the pause menu's lines 7..12
+LABELS = ['THEME  %s', 'FACE  %s', 'RED SUIT  %s', 'BLK SUIT  %s', 'HIGHLIGHT  %s', 'ACCENT  %s']   # the pause menu's lines 7..12
 OPTS = [PRESETS, FACES, REDS, BLACKS, HILITES, ACCENTS]     # the order of the game's cop[] (and of the names in the text block)
 
 
@@ -76,9 +82,9 @@ def faces(cls):
 
 def variants():
     """the per-class colours: red[r][cls], black[b][cls], hilite[h][cls] = (gold, glow)"""
-    inks = [fit(d, faces(0), 7) for _, d, _ in BLACKS]                          # (the inks of the light faces: the menu bar's text there)
+    inks = [fit(b[1], faces(0), 7) for b in BLACKS]                          # (the inks of the light faces: the menu bar's text there)
     red = [[fit(c, faces(k), 4.5) for k in range(3)] for _, c in REDS]
-    blk = [[inks[i] if k == 0 else fit(l, faces(k), 4.5) for k in range(3)] for i, (_, d, l) in enumerate(BLACKS)]
+    blk = [[inks[i] if k == 0 else (l if i >= RAWK else fit(l, faces(k), 4.5)) for k in range(3)] for i, (_, d, l) in enumerate(BLACKS)]
     hil = [[(fit(g, inks if k == 0 else faces(k), 4.5), w) for k in range(3)] for _, g, w in HILITES]
     return red, blk, hil
 
@@ -129,20 +135,18 @@ def data():
 
 
 # the pause menu's BG lines (the backdrop's drifting things: Scene.h sceneFg) share this text block: their labels, then their values
-BG_LABELS = ['BG  %s', 'BG HOLD  %s']
+BG_LABELS = ['BACKDROP  %s', 'BG SHOWN  %s']
 BG_OPTS = [['AUTO', 'SCENE', 'MATRX', 'EMBER', 'RAIN', 'FLIES', 'CARDS', 'FOG'], ['STAGE', 'ALWAYS']]
 
 
 def strings():
     """the text block: LABELS, every option's names (in OPTS order), BG_LABELS, the BG options' names; the first name of each option
     (the six COLORS options, then BG and BG HOLD), the line of BG_LABELS[0]"""
-    s, first = list(LABELS), []
+    s, first = [], []
     for o in OPTS:
         first.append(len(s))
         s += [e[0] for e in o]
-    bgl = len(s)
-    s += BG_LABELS
     for o in BG_OPTS:
         first.append(len(s))
         s += o
-    return s, first, bgl
+    return list(LABELS) + BG_LABELS, s, first, len(LABELS)

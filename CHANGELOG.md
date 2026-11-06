@@ -1,5 +1,17 @@
 # Changelog
 
+## V1.3.13
+
+- Hold LEFT or RIGHT to run along the hand and the shop: one step on the press, then a step every few frames.
+- Room for more colour options (the colours' text is split over two blocks).
+
+## V1.3.12
+
+- The default highlight is now a dark red (the bone theme); the old gold is still in the HIGHLIGHT list.
+- More colours: HIGHLIGHT gets CHAR, RED, ORANGE, WHITE, VIOLET and GOLD; ACCENT gets BLACK, RED, BLUE, ORANGE and GREY.
+- BLK SUIT gets MONO ALL and PURE ALL: black (or near black) suits on every face, set by hand and not auto-lightened.
+- Clearer pause-menu names: CARD SIZE, CORNERS, TONE, BLK SUIT, HIGHLIGHT, BACKDROP, BG SHOWN.
+
 ## V1.3.10 (first public release)
 
 - The release build: the original songs only (ambient, dungeon synth and jazz), a smaller `WILDHAND.DAT`.

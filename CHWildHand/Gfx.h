@@ -239,7 +239,7 @@ static int lvl(int from, int span, int max) {          // 0..max as heat climbs 
 // the COLORS options (pause menu; tools/colours.py): read from the card's colour block when one changes, into the palette entries below.
 // A face's class: 0 light (no remap: the paper is P_CARD, the black suits P_INK), else dark (THREMAP: the paper P_INK, the black suits P_SHADE).
 static uint8_t colDark;
-enum { COL_TXG = 9, COL_DATG = 10 };                  // the colours' text block (labels, names) and data block (its C_ offsets: CardIndex.h)
+enum { COL_TXG = 9, COL_DATG = 11 };                  // the colours' text block (labels, names) and data block (its C_ offsets: CardIndex.h)
 __attribute__((noinline)) static void applyCol() {
     const uint8_t *d = card::at(CARD_TEXT + 512u * COL_DATG);
     if (!d) return;                                      // (no card, or not this frame: the next one)

@@ -3,12 +3,12 @@ the dealers' looks. tools/make_card.py appends them to the effects' RAM block; t
 
 import colours
 import songs
-_ct, _first, _bgl = colours.strings()
-COL_TXG = 9                    # the colours' text block (Gfx.h COL_TXG; card_text.GROUPS)
+_ct, _vt, _first, _bgl = colours.strings()
+COL_TXG = 9; COL_VTG = 10                    # the colours' text block (Gfx.h COL_TXG; card_text.GROUPS)
 # the pause menu's lines (Bonus.h drawPauseMenu): the block and line of the text, the block and first line of the values (255: no value).
 # 0 RESUME, 1-6 MUSIC, EFFECTS, CARD, INDEX, SONG, EQ, 7-12 the COLORS options THEME .. ACCENT, 13-14 BG, BG HOLD, 15 SAVE GAME, 16 QUIT TO TITLE
 PM = ([1, 20, 255, 0], [4, 7, 4, 14], [4, 8, 4, 16], [4, 9, 3, 13], [4, 10, 3, 36], [4, 12, 255, 0], [4, 13, 3, 18]) + \
-     tuple([COL_TXG, k, COL_TXG, _first[k]] for k in range(6)) +      tuple([COL_TXG, _bgl + k, COL_TXG, _first[6 + k]] for k in range(2)) + ([1, 21, 255, 0], [1, 22, 255, 0])
+     tuple([COL_TXG, k, COL_VTG, _first[k]] for k in range(6)) +      tuple([COL_TXG, _bgl + k, COL_VTG, _first[6 + k]] for k in range(2)) + ([1, 21, 255, 0], [1, 22, 255, 0])
 PM = [v for r in PM for v in r]
 assert len(_ct) > 7 and len(PM) == 17 * 4
 
