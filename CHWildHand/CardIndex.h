@@ -18,4 +18,4 @@ static constexpr uint16_t C_PRE = 0, C_FCLS = 40, C_SRC = 53, CT_JSPLIT = 20, CT
 #define SG_BONUS 8
 #define SG_PAUSE 11
 #define NSTAGE 13                                        // the stage songs
-#define WH_VERSTR "V1.3.13"
+#define WH_VERSTR "V1.3.15"

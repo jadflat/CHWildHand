@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.3.15
+
+- The MATRX backdrop rains bright green. The options' glow colour returns when it ends.
+
 ## V1.3.13
 
 - Hold LEFT or RIGHT to run along the hand and the shop: one step on the press, then a step every few frames.

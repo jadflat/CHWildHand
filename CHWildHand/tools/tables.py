@@ -50,7 +50,7 @@ PART = [
     (0, 0, 0, 0, 0x11, 6),
     (20, P_DARK, P_GREY, F | 6, 0x12, 255),          # (game over: ash falling)
     (16, P_GLOW, P_TEXT, 3, 0x11, 6),
-    (36, P_GREY, P_GLOW, F | 5, 0x16, 255),          # MATRX: falling code
+    (36, P_GLOW, P_GLOW, F | 5, 0x16, 255),          # MATRX: falling code (P_GLOW is set to bright green while it runs, Gfx.h)
     (30, P_RED, P_GOLD, 7, 0x11, 3),                 # EMBER: sparks rising, swaying
     (40, P_GREY, P_SHADE, F | 16, 0x15, 255),        # RAIN
     (16, P_GLOW, P_GOLD, B | 1, 0x22, 1),            # FLIES: slow, wandering, blinking

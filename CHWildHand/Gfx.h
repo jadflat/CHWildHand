@@ -273,6 +273,10 @@ static void palTick() {
         }
         gfx_setPaletteEntry(idx[k], gfx_rgb(rgb[0], rgb[1], rgb[2]));
     }
+    static bool green;                                   // MATRX: the code rains bright green (and the options' glow comes back after)
+    const bool mx = (bgSel ? bgSel + 5 : BGORD[round_ & 7]) == 7 && !fxLow;
+    if (mx) gfx_setPaletteEntry(P_GLOW, gfx_rgb(40, 255, 70)); else if (green) colDue = 1;
+    green = mx;
     if (fxLow) flashT = 0;
     if (flashT) { gfx_setFade(flashT * 22, gfx_rgb(255, 250, 220)); flashT--; } else gfx_setFade(0);
 }
