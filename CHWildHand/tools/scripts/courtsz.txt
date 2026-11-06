@@ -1,0 +1,49 @@
+cal
+say Z 99
+wait 30
+tap A
+wait 12
+tap A
+wait 40
+say C 0
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+wait 6
+tap RIGHT
+tap RIGHT
+wait 14
+snap c0
+say C 1
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+wait 6
+tap RIGHT
+tap RIGHT
+wait 14
+snap c1
+say C 2
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+wait 6
+tap RIGHT
+tap RIGHT
+wait 14
+snap c2

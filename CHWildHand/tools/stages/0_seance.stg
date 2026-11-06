@@ -1,0 +1,147 @@
+; SEANCE: repeat the candles (a ritual circle, four candle plates; a lit one glows and flickers)
+.stage SEANCE
+.rule REPEAT THE CANDLES
+.rule 5 ROUNDS, 3 SLIPS
+.score ROUNDS %d/5 SLIPS %d/3
+.str WATCH WATCH...
+.str TURN YOUR TURN
+.reg PL r4          ; (draw: the slips seen last frame)
+.reg Q r5           ; (draw: a scratch value)
+.reg FF r10
+.reg B r11          ; 0 = the show, 1 = your turn
+.reg A r12          ; the buttons matched (0 during the show)
+.reg SEL r13        ; the lit candle (4: none)
+.reg T r14          ; the lit candle's frames left (10 on a beat or a press: a burst)
+.reg LEN r15
+.reg I r23
+.reg X r24
+.reg Y r25
+.reg D r26
+.reg M r27
+.reg C r28
+.reg C2 r29
+.reg C3 r30
+
+.init
+    SET I, 16
+gen: RND X, 4
+    ST I, X
+    ADD I, I, 1
+    JLT I, 23, gen
+    SET SEL, 4
+
+.update
+    JNE EZ, 1, go
+    SET EZ, 2
+    SET B, 1
+go: ADD FF, FF, 1
+    SUB T, T, 1
+    MAX T, T, 0
+    JNE T, 0, nt
+    SET SEL, 4
+nt: ADD LEN, W, 2
+    JNE B, 0, turn
+    DIV I, FF, 22
+    SUB I, I, 1
+    MOD M, FF, 22
+    SET SEL, 4
+    JGE I, LEN, over
+    JLT I, 0, done
+    JGE M, 15, done
+    ADD X, I, 16
+    LD SEL, X
+    SHR SEL, SEL, EZ
+    JNE M, 0, done
+    SET T, 10
+    MUL X, SEL, 3
+    SFX SFX_BWIP, X
+done: END
+over: SET B, 1
+    END
+turn: SET D, 0
+lp: MUL X, D, 2             ; (UP, RIGHT, DOWN, LEFT: the first one pressed wins)
+    SHR X, 99, X
+    AND X, X, 3
+    SHR X, 32, X
+    EDGE X, X
+    JNE X, 0, got
+    ADD D, D, 1
+    JLT D, 4, lp
+got: JEQ D, 4, done
+    SET SEL, D
+    SET T, 10
+    MUL X, D, 3
+    SFX SFX_BWIP, X
+    ADD X, A, 16
+    LD X, X
+    SHR X, X, EZ
+    JNE X, D, slip
+    ADD A, A, 1
+    JLT A, LEN, done
+    ADD W, W, 1
+    SET B, 0
+    SET FF, 0
+    SET A, 0
+    SFX SFX_POP, 0
+    JLT W, 5, done
+    WIN
+slip: ADD L, L, 1
+    SET B, 0
+    SET FF, 0
+    SET A, 0
+    FLASH 3
+    BURST 64, 84, 12, RED, WINE, 30
+    SFX SFX_NO, 0
+    JLT L, 3, done
+    LOSE
+
+.draw
+    CIRC 64, 84, 27, GOLDDK
+    CIRC 64, 84, 20, INK
+    SIN X, FC, 27
+    ADD X, X, 64
+    ADD Q, FC, 192
+    SIN Y, Q, 26
+    ADD Y, Y, 84
+    FCIRC X, Y, 3, GOLD
+    FCIRC X, Y, 1, GLOW
+    SET D, 0
+cand: MUL Q, D, 64
+    SIN X, Q, 28
+    ADD X, X, 64
+    ADD Q, Q, 192
+    SIN Y, Q, 26
+    ADD Y, Y, 84
+    SET C, GOLDDK
+    SET C2, BG
+    SET C3, SHADE
+    JNE SEL, D, paint
+    SET C, GLOW
+    SET C2, CARD
+    SHR C3, D, 1
+    ADD C3, C3, RED
+    SUB Q, 25, T
+    CIRC X, Y, Q, GOLDDK
+    CIRC X, Y, 14, GOLD
+    JNE T, 10, paint
+    BURST X, Y, 8, C, C2, 24
+paint: FCIRC X, Y, 12, C
+    FCIRC X, Y, 10, C2
+    CIRC X, Y, 13, INK
+    SUB Q, X, 7
+    SUB I, Y, 7
+    SUIT D, Q, I, C3, 2
+    ADD D, D, 1
+    JLT D, 4, cand
+    SET I, 0
+pip: SET C, GOLDDK
+    JGE I, A, dim
+    SET C, GOLD
+dim: MUL X, I, 4
+    ADD X, X, 52
+    FRECT X, 83, 3, 3, C
+    ADD I, I, 1
+    JLT I, 6, pip
+    ADD X, B, $WATCH
+    TEXT -1, 35, X, GLOW, 0, 0
+    TEXT -1, 26, $SCORE, TEXT, W, L

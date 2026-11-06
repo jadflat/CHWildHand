@@ -1,0 +1,50 @@
+cal
+say Z 99
+wait 30
+tap DOWN
+wait 5
+tap A
+wait 12
+tap UP
+wait 6
+snap w00_list
+tap A
+wait 215
+snap w01_intro_watcher
+tap A
+wait 12
+wait 20
+snap w02_shut
+hold A
+wait 60
+snap w03_creep
+wait 40
+snap w04_waking
+wait 15
+snap w05_struck
+wait 100
+snap w06_waking2
+wait 130
+snap w07_caught
+release
+wait 60
+snap w08_lose
+wait 30
+tap A
+wait 8
+tap A
+wait 215
+tap A
+wait 12
+say I 102
+hold A
+wait 150
+snap w09_easy_mid
+wait 160
+snap w10_door
+release
+wait 50
+snap w11_win
+wait 30
+tap A
+wait 8

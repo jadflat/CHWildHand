@@ -1,0 +1,35 @@
+cal
+say Z 99
+wait 20
+perf reset
+wait 60
+perf title
+tap A
+wait 12
+tap A
+wait 20
+say R 7
+say J 0 4 6
+say H 255
+perf reset
+wait 60
+perf hot-play
+tap A
+tap RIGHT
+tap A
+tap B
+wait 50
+perf hot-result
+tap A
+wait 30
+perf hot-riffle
+say X
+wait 5
+perf reset
+wait 40
+perf shop
+say W
+wait 5
+perf reset
+wait 60
+perf win

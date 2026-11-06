@@ -1,0 +1,24 @@
+say Z 99
+wait 30
+say F 2
+tap START
+wait 4
+snap pmoff
+tap START
+wait 4
+tap A
+wait 10
+tap A
+tap RIGHT
+tap A
+wait 30
+snap h1
+tap RIGHT
+wait 3
+snap h2
+say F 0
+wait 30
+snap h3
+tap RIGHT
+wait 3
+snap h4

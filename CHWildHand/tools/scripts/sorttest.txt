@@ -1,0 +1,7 @@
+say Z 99
+say k 400
+wait 2
+say k 400
+wait 2
+say k 400
+wait 2

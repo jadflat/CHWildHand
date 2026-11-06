@@ -1,0 +1,160 @@
+say Z 99
+wait 30
+tap A
+wait 12
+tap A
+wait 120
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg1
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg2
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg3
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg4
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg5
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg6
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap RIGHT
+tap START
+wait 10
+rec start 2
+wait 70
+rec stop bg7
+wait 2

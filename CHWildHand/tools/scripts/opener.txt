@@ -1,0 +1,12 @@
+cal
+wait 30
+tap A
+wait 12
+tap A
+wait 60
+snap open1
+tap A
+wait 30
+tap A
+wait 40
+snap open2

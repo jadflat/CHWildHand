@@ -1,0 +1,71 @@
+# score test: dealer 0: a 5-card high card, then a 4-card high card (SCARECROW: +25 chips on the first only)
+say Z 99
+wait 30
+tap A
+wait 20
+say R 1
+say D 0
+say M 10
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 20
+tap A
+wait 10
+say j
+say x 0 0 2 1 4 2 6 3 9 0 1 1 3 2 5 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j
+say x 0 0 2 1 4 2 6 3 9 0 1 1 3 2 5 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j

@@ -1,0 +1,27 @@
+cal
+say Z 99
+wait 30
+tap A
+wait 160
+say J 0 2 25 30 23
+say I 9
+say x 0 0 3 0 5 0 7 0 9 0 1 1 2 2 3 3
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 4
+tap B
+wait 120
+snap en_result
+tap A
+wait 30
+snap en_next
+tap A
+wait 60
+snap en_next2

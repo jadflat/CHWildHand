@@ -1,0 +1,22 @@
+out/
+build/
+__pycache__/
+*.pyc
+CHWildHand/sdcard/
+CHWildHand/out/
+# release assets and marketing (attached to releases, not tracked)
+dist/
+# scratch and work-in-progress
+STATUS.md
+h?_out/
+out/
+**/out/
+*.orig
+*.log
+CHWildHand/court3/
+CHWildHand/courtbg/
+CHWildHand/courtbr/
+CHWildHand/hint1/
+CHWildHand/hint2/
+CHWildHand/tools/chsim/build/
+CHWildHand/tools/songs_private.py

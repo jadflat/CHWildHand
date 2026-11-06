@@ -1,0 +1,71 @@
+say Z 99
+wait 30
+snap title
+say D 0
+tap A
+wait 40
+snap deal_robo
+wait 130
+snap play_scanner
+tap DOWN
+wait 3
+snap levels
+tap A
+wait 3
+tap A
+tap RIGHT
+tap A
+wait 6
+snap pick
+wait 2
+tap START
+wait 4
+tap DOWN
+tap DOWN
+wait 2
+snap pause
+tap START
+wait 4
+say J 8 16 20
+say M 30
+say X
+wait 10
+snap shop
+tap RIGHT
+wait 3
+tap RIGHT
+wait 3
+tap RIGHT
+wait 3
+tap RIGHT
+wait 3
+say Y 1
+say D 1
+tap A
+wait 60
+snap deal_boss
+tap A
+wait 30
+snap play_facedown
+say Y 0
+say D 3
+say Z 0
+say G
+wait 20
+snap bonus_arcs
+wait 30
+snap bonus_orbit
+wait 40
+snap bonus_fan
+wait 40
+snap bonus_riffle
+wait 50
+snap bonus_flip
+wait 30
+snap bonus_prompt
+tap A
+wait 40
+snap speed_run
+say E 10
+wait 20
+snap timeup

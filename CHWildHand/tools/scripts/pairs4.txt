@@ -1,0 +1,45 @@
+say Z 99
+wait 30
+tap A
+wait 20
+tap A
+wait 10
+say D 2
+say Z 3
+say G
+wait 202
+snap p_rules
+tap A
+wait 10
+tap A
+tap RIGHT
+tap A
+wait 30
+snap p_miss1
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 30
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 30
+tap RIGHT
+tap A
+tap DOWN
+tap A
+wait 30
+snap p_miss3
+tap LEFT
+tap A
+tap LEFT
+tap A
+wait 30
+tap LEFT
+tap A
+tap LEFT
+tap A
+wait 60
+snap p_end

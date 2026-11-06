@@ -1,0 +1,30 @@
+cal
+say Z 99
+wait 30
+tap A
+wait 12
+tap A
+wait 60
+tap DOWN
+wait 10
+snap levels
+tap A
+wait 10
+tap START
+wait 10
+tap DOWN
+tap DOWN
+wait 10
+snap pause
+tap START
+wait 10
+say X
+wait 20
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 10
+snap shopreroll
+tap RIGHT
+wait 10
+snap shopnext

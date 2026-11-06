@@ -1,0 +1,27 @@
+say Z 99
+wait 30
+tap START
+wait 4
+tap START
+wait 4
+tap DOWN
+tap A
+wait 8
+say M 12
+say X
+wait 25
+snap s0
+tap DOWN
+wait 4
+snap s1
+tap DOWN
+wait 4
+snap s2
+tap UP
+wait 4
+snap s3
+tap UP
+tap UP
+tap UP
+wait 4
+snap s4

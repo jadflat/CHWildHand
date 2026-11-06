@@ -1,0 +1,140 @@
+; GALLOWS: a skull swings on a rope over the floor; A stops it, over the gold zone is a hit (the native stage of 1.0, as a script)
+.stage GALLOWS
+.rule A: STOP THE SKULL
+.rule 5 HITS, 3 MISSES
+.score HITS %d/5  MISSES %d/3
+.reg ANG r10        ; the swing (256 a turn)
+.reg ZONE r11       ; the gold zone: 0..2
+.reg HW r12         ; its half width
+.reg T r13          ; the result: frames left
+.reg SEL r14        ; the last stop hit
+.reg BUSY r15
+.reg D r16
+.reg X r17
+.reg Y r18
+.reg BX r19
+.reg BY r20
+.reg ZC r21
+.reg C r22
+.reg K r23
+.reg A r24
+.reg GX r25
+.reg GY r26
+.reg E r27
+.str HIT HIT!
+.str MISS MISS!
+
+.init
+    SET HW, 9
+    SET ZONE, 1
+
+.update
+    JEQ EZ, 0, go
+    SET HW, 200                 ; (debug: any stop hits)
+go: SET BUSY, T
+    SUB T, T, 1
+    MAX T, T, 0
+    JEQ BUSY, 0, swing
+    JNE T, 0, done
+    RND ZONE, 3                 ; the result is over: a new zone
+    END
+swing:
+    ADD ANG, ANG, 3
+    ADD ANG, ANG, W             ; faster with each hit
+    EDGE X, BTN_A
+    JEQ X, 0, done
+    SIN D, ANG, 50
+    SUB X, ZONE, 1
+    MUL X, X, 26
+    SUB D, D, X
+    ABS D, D
+    SET SEL, 0
+    JLT HW, D, miss
+    SET SEL, 1
+    ADD W, W, 1
+    SFX SFX_TADA, 0
+    BURST 64, 100, 10, GOLD, GLOW, 30
+    JMP hit
+miss:
+    ADD L, L, 1
+    SFX SFX_WAH, 0
+hit:
+    SET T, 30
+    JLT W, 5, more
+    WIN
+more:
+    JLT L, 3, done
+    LOSE
+done:
+
+.draw
+    TEXT -1, 26, $SCORE, TEXT, W, L
+    FRECT 8, 36, 112, 74, INK   ; the night, and the haze over the graves
+    FRECT 8, 90, 112, 20, DARK
+    FCIRC 98, 58, 10, SHADE     ; the moon
+    FCIRC 94, 62, 3, GREY
+    FCIRC 103, 53, 2, GREY
+    FRECT 106, 84, 2, 26, BG    ; a cross, a stone
+    FRECT 102, 88, 10, 2, BG
+    FRECT 8, 36, 112, 4, GOLDDK ; the gallows
+    HLINE 8, 36, 112, GOLD
+    FRECT 8, 36, 5, 74, GOLDDK
+    FRECT 12, 40, 1, 70, GOLD
+    LINE 13, 60, 33, 40, GOLDDK
+    FCIRC 64, 41, 2, GREY
+    FRECT 4, 110, 120, 3, GOLDDK ; the floor
+    HLINE 4, 110, 120, GOLD
+    MUL ZC, ZONE, 26
+    ADD ZC, ZC, 38
+    SUB X, ZC, HW
+    MUL Y, HW, 2
+    ADD Y, Y, 1
+    AND A, FC, 8
+    ADD C, A, 5
+    FRECT X, 102, Y, 8, GOLD    ; the zone: body, shimmering top, posts
+    HLINE X, 102, Y, C
+    FRECT X, 92, 1, 10, C
+    ADD X, ZC, HW
+    FRECT X, 92, 1, 10, C
+    SET K, 30
+tr: SUB K, K, 10                ; the swing, and its two ghosts
+    SUB A, ANG, K
+    SIN BX, A, 50
+    MUL BY, BX, BX
+    DIV BY, BY, 104
+    SUB BY, 91, BY
+    ADD BX, BX, 64
+    JEQ K, 0, sw
+    JNE T, 0, tr
+    FCIRC BX, BY, 3, GOLDDK
+    JMP tr
+sw: LINE 64, 40, BX, BY, SHADE   ; the rope
+    SET C, TEXT
+    JEQ T, 0, sk
+    SET C, RED
+    JEQ SEL, 0, sk
+    SET C, GOLD
+sk: FCIRC BX, BY, 6, WINE      ; the skull, shaded from the lower left
+    SUB Y, BY, 1
+    ADD X, BX, 1
+    FCIRC X, Y, 5, C
+    SUB X, BX, 4
+    SUB Y, BY, 3
+    SET K, 2
+ey: FRECT X, Y, 3, 3, INK
+    ADD X, X, 6
+    DJNZ K, ey
+    ADD Y, BY, 5
+    SUB X, BX, 2
+    FRECT X, Y, 5, 2, C
+    ADD Y, BY, 1
+    FRECT BX, Y, 1, 2, INK
+    JEQ T, 0, out
+    SUB X, 30, T
+    SHR X, X, 1
+    CIRC BX, BY, X, C
+    JEQ SEL, 0, ms
+    TEXT -1, 116, $HIT, GOLD, 0, 0
+    END
+ms: TEXT -1, 116, $MISS, RED, 0, 0
+out:

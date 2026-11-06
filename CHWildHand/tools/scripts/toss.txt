@@ -1,0 +1,17 @@
+cal
+say Z 99
+wait 30
+tap A
+wait 160
+tap A
+wait 6
+snap n_before
+tap UP
+wait 30
+snap n_after
+tap RIGHT
+tap A
+wait 4
+tap UP
+wait 30
+snap n_after2

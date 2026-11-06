@@ -1,0 +1,57 @@
+say Z 99
+wait 30
+tap A
+wait 20
+tap A
+wait 10
+say D 4
+say Z 1
+say G
+wait 202
+tap A
+wait 10
+snap hilo
+tap UP
+wait 10
+snap hilo_call
+wait 30
+say D 5
+say Z 2
+say G
+wait 202
+snap duel_prompt
+tap A
+wait 10
+snap duel
+tap A
+wait 20
+snap duel_reveal
+wait 30
+say D 2
+say Z 3
+say G
+wait 202
+tap A
+wait 10
+tap A
+tap RIGHT
+tap A
+wait 4
+snap pairs
+wait 30
+say U
+wait 60
+snap turbo
+tap A
+wait 30
+say E 5
+wait 40
+snap turbo_end
+tap A
+wait 10
+say W
+wait 20
+snap won_endless
+say O
+wait 20
+snap over

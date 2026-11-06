@@ -1,0 +1,94 @@
+cal
+say Z 99
+wait 30
+tap DOWN
+wait 5
+tap A
+wait 12
+tap DOWN
+wait 4
+tap DOWN
+tap DOWN
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf seance
+say E 20
+say I 101
+wait 100
+tap A
+wait 8
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf gallows
+say E 20
+say I 101
+wait 100
+tap A
+wait 8
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf wheel
+say E 20
+say I 101
+wait 100
+tap A
+wait 8
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf raven
+say E 20
+say I 101
+wait 100
+tap A
+wait 8
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf ghouls
+say E 20
+say I 101
+wait 100
+tap A
+wait 8
+tap DOWN
+wait 4
+tap A
+wait 215
+tap A
+wait 12
+perf reset
+wait 100
+perf count
+say I 101
+wait 100
+tap A
+wait 8

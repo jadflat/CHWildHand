@@ -1,0 +1,153 @@
+; DEAD WHEEL: the wheel of the dead spins; A stops it, a gold wedge at the pointer is a hit (the native stage of 1.0, as a script)
+.stage DEAD WHEEL
+.rule A: STOP ON GOLD
+.rule 3 OF 5 SPINS
+.score GOLD %d/3  MISSES %d/3
+.const CX 64
+.const CY 82
+.reg ANG r10        ; the wheel
+.reg DIR r11        ; 1: it turns back
+.reg STEP r12       ; spins done: faster each
+.reg TOL r13        ; how far from the gold still hits
+.reg T r14
+.reg SEL r15
+.reg BUSY r16
+.reg D r17
+.reg X r18
+.reg Y r19
+.reg A r20
+.reg I r21
+.reg C r22
+.reg E r23              ; the eyes
+.reg PC r24             ; the pointer
+.reg R r25              ; the rim
+.str HIT HIT!
+.str MISS MISS!
+
+.init
+    SET TOL, 12
+    RND ANG, 256
+
+.update
+    JEQ EZ, 0, go
+    SET TOL, 200                ; (debug: any stop hits)
+go: SET BUSY, T
+    JEQ T, 0, idle
+    SUB T, T, 1
+idle:
+    JEQ BUSY, 0, spin
+    JNE T, 0, done
+    ADD STEP, STEP, 1           ; the result is over: the next spin, the other way, faster
+    SUB DIR, 1, DIR
+    RND ANG, 256
+    END
+spin:
+    ADD X, STEP, 3
+    JEQ DIR, 0, fw
+    SUB X, 0, X
+fw: ADD ANG, ANG, X
+    AND ANG, ANG, 255
+    EDGE X, BTN_A
+    JEQ X, 0, done
+    ADD D, ANG, 64
+    AND D, D, 127
+    JLT D, 65, near
+    SUB D, 128, D
+near:
+    SET SEL, 0
+    JLT TOL, D, miss
+    SET SEL, 1
+    ADD W, W, 1
+    SFX SFX_TADA, 0
+    BURST 64, 46, 10, GOLD, GLOW, 30
+    FLASH 5
+    JMP hit
+miss:
+    ADD L, L, 1
+    SFX SFX_WAH, 0
+    BURST 64, 46, 8, RED, DARK, 20
+hit:
+    SET T, 30
+    JLT W, 3, more
+    WIN
+more:
+    JLT L, 3, done
+    LOSE
+done:
+
+.draw
+    TEXT -1, 26, $SCORE, TEXT, W, L
+    SET R, GOLDDK               ; the pointer pulses; the rim and the eyes show the result
+    SET E, INK
+    SET PC, TEXT
+    AND D, FC, 4
+    JEQ D, 0, calm
+    SET PC, GOLD
+calm:
+    JEQ T, 0, face
+    MUL D, SEL, 8               ; a miss: red, a hit: glow
+    ADD PC, D, 3
+    ADD E, SEL, 3
+    SET R, PC
+face:
+    FCIRC CX, CY, 38, DARK      ; the wheel's dark face, its rim
+    CIRC CX, CY, 40, R
+    CIRC CX, CY, 39, R
+    SET I, 0
+wedge:                          ; sixteen wedges round the hub, two of them gold
+    MUL A, I, 16
+    ADD A, A, ANG
+    ADD X, A, 72                ; the stud between two wedges
+    SIN X, X, 39
+    ADD X, X, CX
+    ADD Y, A, 8
+    SIN Y, Y, 39
+    ADD Y, Y, CY
+    FCIRC X, Y, 1, GOLD
+    ADD X, A, 64
+    SIN X, X, 31
+    ADD X, X, CX
+    SIN Y, A, 31
+    ADD Y, Y, CY
+    AND C, I, 1                 ; a ring and a core, the two tones swapped on every other wedge
+    MUL C, C, 12
+    SUB C, 15, C
+    FCIRC X, Y, 5, C
+    SUB C, 18, C
+    FCIRC X, Y, 2, C
+    AND D, I, 7                 ; (a gold one covers it)
+    JNE D, 0, lit
+    FCIRC X, Y, 6, GOLDDK
+    FCIRC X, Y, 5, GOLD
+    FCIRC X, Y, 2, GLOW
+lit:
+    SUB X, X, 2                 ; the light from the top left
+    SUB Y, Y, 2
+    HLINE X, Y, 2, GLOW
+    ADD I, I, 1
+    JLT I, 16, wedge
+    FCIRC CX, CY, 17, DARK      ; the hub, a face
+    CIRC CX, CY, 17, GOLDDK
+    FCIRC CX, CY-1, 10, TEXT
+    FRECT CX-5, CY-4, 3, 3, E
+    FRECT CX+2, CY-4, 3, 3, E
+    FRECT CX-1, CY, 2, 2, INK
+    HLINE CX-3, CY+3, 7, INK
+    SET I, 8
+    SET X, CX-8
+    SET Y, 35
+    SET D, 17
+tri:                            ; the pointer
+    HLINE X, Y, D, PC
+    ADD X, X, 1
+    ADD Y, Y, 1
+    SUB D, D, 2
+    DJNZ I, tri
+    LINE CX-9, 35, CX, 43, INK
+    LINE CX+9, 35, CX, 43, INK
+    JEQ T, 0, out
+    JEQ SEL, 0, ms
+    TEXT -1, CY+14, $HIT, GOLD, 0, 0
+    END
+ms: TEXT -1, CY+14, $MISS, RED, 0, 0
+out:

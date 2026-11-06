@@ -1,0 +1,24 @@
+cal
+say Z 99
+wait 30
+tap A
+wait 12
+tap A
+wait 40
+tap START
+wait 10
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap LEFT
+wait 60
+say V
+wait 30
+tap A
+wait 12
+tap A
+wait 40
+tap START
+wait 10
+snap s_menu

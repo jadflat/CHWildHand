@@ -1,0 +1,8 @@
+WildHand
+Copyright (c) 2026 Jadflat, MIT (see LICENSE).
+
+An original horror poker roguelike for CHGame. All code, pictures, sounds and songs are original.
+Card.cpp's SD card reader comes from the same author's STARLIFT (MIT).
+
+Built on CHGame, Copyright 2026 Kevin Bates (bateske), Apache-2.0: vendored unchanged in chgame/
+(see chgame/LICENSE and chgame/NOTICE). Upstream: https://github.com/bateske/CHGame

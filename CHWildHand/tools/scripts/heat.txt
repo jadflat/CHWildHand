@@ -1,0 +1,26 @@
+say Z 99
+wait 20
+tap DOWN
+tap A
+wait 30
+say R 7
+say J 0 4 6
+say H 255
+wait 40
+snap hot1
+tap A
+tap RIGHT
+tap A
+wait 7
+snap hot2
+tap B
+wait 23
+snap hot3
+wait 10
+snap hot4
+tap A
+wait 12
+snap hot5
+say H 140
+wait 10
+snap warm

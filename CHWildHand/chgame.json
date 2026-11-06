@@ -1,0 +1,17 @@
+{
+  "id": "wildhand",
+  "title": "Wild Hand",
+  "author": "Jadflat",
+  "genre": "Cards",
+  "description": "A poker roguelike: six dealers, boss rounds, bonus stages, 24 wild cards, endless and turbo modes. Needs WILDHAND.DAT on the SD card.",
+  "license": "MIT",
+  "buttons": [
+    { "control": "LEFT/RIGHT", "action": "Move the cursor" },
+    { "control": "A", "action": "Pick / drop a card" },
+    { "control": "B", "action": "Play the picked cards" },
+    { "control": "UP", "action": "Discard the picked cards" },
+    { "control": "DOWN", "action": "Hand levels table" },
+    { "control": "START", "action": "Pause menu" },
+    { "control": "START (hold 3 s)", "action": "Back to the CHGame menu" }
+  ]
+}

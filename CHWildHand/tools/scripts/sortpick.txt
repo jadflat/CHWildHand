@@ -1,0 +1,26 @@
+say Z 99
+wait 30
+tap A
+wait 170
+say h
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 12
+snap fh_picked
+tap B
+wait 20
+snap fh_tally
+wait 100
+tap A
+wait 6
+snap refill_slide
+wait 30
+say h
+snap refill_done

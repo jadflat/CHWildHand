@@ -1,0 +1,104 @@
+# the three newer dealers (6 PLAGUE DOCTOR, 7 SCARECROW, 8 PORCELAIN DOLL): their shuffle, deal and table, and their edges' numbers (say j)
+say Z 99
+wait 30
+tap A
+wait 20
+say R 1
+say D 6
+say M 10
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 30
+snap doctor_shuffle
+wait 45
+snap doctor_deal
+wait 40
+snap doctor_dealt
+tap A
+wait 30
+snap doctor_table
+say j
+tap UP
+wait 30
+say j
+snap doctor_toss
+tap RIGHT
+tap UP
+wait 30
+say j
+tap UP
+wait 10
+say j
+say R 1
+say D 7
+say M 10
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 30
+snap crow_shuffle
+wait 45
+snap crow_deal
+wait 40
+snap crow_dealt
+tap A
+wait 30
+snap crow_table
+say j
+say R 1
+say D 8
+say M 10
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 30
+snap doll_shuffle
+wait 45
+snap doll_deal
+wait 40
+snap doll_dealt
+tap A
+wait 30
+snap doll_table
+say j
+say R 1
+say D 8
+say M 1
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 150
+say j

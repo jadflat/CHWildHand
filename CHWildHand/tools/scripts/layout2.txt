@@ -1,0 +1,34 @@
+say Z 99
+wait 30
+tap A
+wait 160
+say C 4
+tap RIGHT
+tap A
+wait 10
+snap huge
+say C 2
+tap START
+wait 10
+snap pause
+tap START
+wait 5
+tap DOWN
+wait 5
+snap levels
+tap A
+wait 5
+say Z 1
+say G
+wait 60
+snap bonusshow
+wait 150
+tap A
+wait 60
+snap bonusmini
+say O
+wait 30
+snap over
+say W
+wait 30
+snap win

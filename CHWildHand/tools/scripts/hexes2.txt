@@ -1,0 +1,52 @@
+# the two newer hexes (5 FADING HANDS, 6 NO REPEATS): the deal's hex line and the table's hint line; then the bonus show with each newer dealer
+say Z 99
+wait 30
+tap A
+wait 20
+say R 1
+say Y 5
+say D 6
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 110
+snap hex5_deal
+tap A
+wait 30
+snap hex5_table
+say R 1
+say Y 6
+say D 8
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 110
+snap hex6_deal
+tap A
+wait 30
+snap hex6_table
+say Y 255
+say D 6
+say G
+wait 60
+snap bonus_d6
+say D 7
+say G
+wait 60
+snap bonus_d7
+say D 8
+say G
+wait 60
+snap bonus_d8

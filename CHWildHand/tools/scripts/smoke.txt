@@ -1,0 +1,18 @@
+say Z 99
+wait 30
+snap title
+tap A
+wait 10
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 5
+snap pick
+tap B
+wait 40
+snap result
+tap A
+wait 10
+snap next

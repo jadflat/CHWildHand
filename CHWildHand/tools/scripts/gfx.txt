@@ -1,0 +1,49 @@
+say Z 99
+wait 30
+snap title
+tap DOWN
+tap A
+wait 30
+snap play
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+wait 10
+snap pick
+tap B
+wait 10
+snap count
+wait 30
+snap result
+tap A
+wait 20
+tap START
+wait 5
+snap pause
+tap START
+wait 5
+say J 2 5 6
+say M 12
+say R 3
+tap A
+tap B
+wait 30
+tap A
+wait 10
+say X
+wait 20
+snap shop
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 5
+snap shopnext
+say O
+wait 20
+snap over
+say W
+wait 30
+snap win

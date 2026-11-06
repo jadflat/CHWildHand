@@ -1,0 +1,64 @@
+cal
+say Z 99
+wait 30
+snap title
+perf reset
+wait 40
+perf title
+tap A
+wait 12
+tap A
+wait 20
+snap play
+perf reset
+wait 40
+perf play
+say R 1
+say Y 1
+say X
+wait 20
+snap shop
+perf reset
+wait 40
+perf shop
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap A
+wait 60
+snap bossdeal
+wait 90
+tap A
+wait 30
+snap boss
+perf reset
+wait 40
+perf boss
+say Z 3
+say G
+wait 60
+snap bonusshow
+perf reset
+wait 60
+perf bonusshow
+wait 120
+snap bonusprompt
+tap A
+wait 60
+snap bonusmini
+perf reset
+wait 40
+perf mini
+say O
+wait 30
+snap over
+perf reset
+wait 40
+perf over
+say W
+wait 30
+snap win
+perf reset
+wait 40
+perf win

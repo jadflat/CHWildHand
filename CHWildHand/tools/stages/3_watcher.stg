@@ -1,0 +1,149 @@
+; THE WATCHER: hold A (or UP) to creep down the hall to the door while a giant eye wakes; move while it looks and it strikes
+; (pushed back a quarter of the way). The door wins; three strikes or 45 seconds lose. Quicker eyes and fake-outs at higher levels.
+.stage THE WATCHER
+.rule HOLD A: CREEP ON
+.rule FREEZE WHEN IT LOOKS
+.score STEPS %d  EYES %d/3
+.const EX 64
+.const EY 50
+.reg P0 r4          ; frames the eye stays shut: 100 .. 50 by level
+.reg P1 r5          ; frames of warning: 26 .. 11
+.str SECS %d
+.reg POS r10        ; how far: 0..300 (a step a frame)
+.reg PH r11         ; the eye: 0 shut, 1 waking, 2 open
+.reg PT r12         ; frames left in the phase
+.reg DIST r13       ; POS / 3, 0..100: the score line
+.reg MOV r14        ; moving this frame
+.reg X r15
+.reg Y r16
+.reg S r17
+.reg H r18
+.reg R r19
+.reg C r20
+.reg I r21
+.reg K r22
+.reg E r23
+.reg D r24
+
+.init
+    MUL P0, LV, 10
+    SUB P0, 100, P0
+    MUL P1, LV, 3
+    SUB P1, 26, P1
+    ADD PT, P0, 30
+
+.update
+    JLT F, 1350, tick
+    LOSE                        ; 45 seconds
+tick:
+    SUB PT, PT, 1
+    JLT 0, PT, move
+    JEQ PH, 0, wake
+    JEQ PH, 1, look
+    SET PH, 0                   ; open: shut again
+    RND X, 30
+    ADD PT, P0, X
+    JMP move
+wake:
+    SET PH, 1
+    SET PT, P1
+    SFX SFX_BWIP, 0
+    JMP move
+look:
+    SUB X, LV, 2                ; a fake-out: 17% a level from level 3
+    MUL X, X, 17
+    RND Y, 100
+    JLT Y, X, fake
+    SET PH, 2
+    SET PT, 40
+    SFX SFX_WHOOSH, 0
+    JMP move
+fake:
+    SET PH, 0
+    SET PT, P0
+move:
+    IN MOV, BTN_A+BTN_UP
+    JEQ MOV, 0, done
+    JNE PH, 2, walk
+    JNE EZ, 0, walk             ; (debug: it never strikes)
+    ADD L, L, 1                 ; seen: struck, pushed back
+    SUB POS, POS, 75
+    MAX POS, POS, 0
+    FLASH 3
+    SFX SFX_NO, 0
+    JLT L, 3, alive
+    LOSE
+alive:
+    BURST 64, 110, 8, RED, RED, 20
+    SET PH, 0
+    SET PT, P0
+    JMP done
+walk:
+    ADD POS, POS, 1
+    AND X, F, 7
+    JNE X, 0, far
+    SFX SFX_TICK, 0
+far:
+    JLT POS, 300, done
+    SET DIST, 100
+    WIN
+done:
+    DIV DIST, POS, 3
+
+.draw
+    TEXT -1, 26, $SCORE, TEXT, DIST, L
+    FRECT 44, 66, 40, 25, BG    ; the hall: far wall, edges, door
+    LINE 0, 127, 44, 90, SHADE
+    LINE 127, 127, 83, 90, SHADE
+    LINE 0, 40, 44, 66, SHADE
+    LINE 127, 40, 83, 66, SHADE
+    RECT 44, 66, 40, 25, GOLDDK
+    JNE PH, 2, nobeam           ; the eye's light falls on you
+    LINE 54, 64, 40, 124, GLOW
+    LINE 74, 64, 88, 124, GLOW
+nobeam:
+    FRECT 56, 73, 16, 18, WINE
+    DIV S, POS, 25              ; the light under the door widens as you near
+    FRECT 64, 73, S, 18, GLOW
+    SET H, 14                   ; the eye: lids open 0..14
+    JEQ PH, 2, lid
+    MUL H, PT, 14
+    DIV H, H, P1
+    SUB H, 14, H
+    MUL H, H, PH
+lid:
+    FRECT 47, 35, 34, 30, WINE
+    RECT 46, 34, 36, 32, GOLDDK
+    FCIRC EX, EY, 13, TEXT
+    SHR C, 8, PH                ; the iris roams while it wakes, settles when open
+    MUL X, F, 9
+    SIN X, X, C
+    ADD X, X, EX
+    SET Y, 52
+    FCIRC X, Y, 8, GOLD
+    SHR R, PT, 3                ; the pupil widens as it stares
+    SUB R, 7, R
+    FCIRC X, Y, R, INK
+    SUB S, 14, H
+    FRECT 48, 36, 32, S, WINE
+    SUB Y, 64, S
+    FRECT 48, Y, 32, S, WINE
+    DIV Y, POS, 9               ; you, seen from behind, walking away to the door (Y: the shoulder line)
+    SUB Y, 118, Y
+    MUL K, POS, 16              ; the stride: S swings -1..1 over 16 steps
+    SIN S, K, 1
+    ADD E, Y, 1                 ; legs (their tops hide under the coat): left (D), right (E)
+    ADD D, E, S
+    SUB E, E, S
+    FRECT 62, D, 2, 8, SHADE
+    FRECT 65, E, 2, 8, SHADE
+    FRECT 60, E, 1, 5, SKIN     ; bare arms hang and swing opposite the legs
+    FRECT 68, D, 1, 5, SKIN
+    FRECT 61, Y, 7, 2, GREY     ; shoulders, back with a shaded spine
+    FRECT 62, Y, 5, 5, GREY
+    FRECT 64, Y, 1, 5, DARK
+    SUB C, Y, 3                 ; the head: dark hair
+    FCIRC 64, C, 2, GOLDDK
+    DIV X, F, 30                ; the seconds left
+    SUB X, 45, X
+    TEXT 4, 116, $SECS, TEXT, X, 0

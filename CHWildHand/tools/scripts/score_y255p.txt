@@ -1,0 +1,104 @@
+# score test: no hex, NO REPEATS' hands
+say Z 99
+wait 30
+tap A
+wait 20
+say R 1
+say Y 255
+say D 0
+say M 10
+say X
+wait 10
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+tap RIGHT
+wait 2
+tap A
+wait 1
+say j
+wait 20
+tap A
+wait 10
+say j
+say x 12 0 12 1 0 2 3 3 5 0 7 1 9 2 10 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j
+say x 12 0 12 1 0 2 3 3 5 0 7 1 9 2 10 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j
+say x 12 0 12 1 0 2 3 3 5 0 7 1 9 2 10 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j
+say x 12 0 12 1 11 2 11 3 5 0 7 1 9 2 0 3
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap LEFT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+tap A
+tap RIGHT
+wait 4
+tap B
+wait 70
+tap A
+wait 20
+say j
