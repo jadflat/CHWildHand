@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.3.16
+
+- The shop cursor stays where it was on the last visit.
+- About 100 bytes of code freed (the shuffle styles moved to the SD card data, three drawing routines tightened).
+
 ## V1.3.15
 
 - The MATRX backdrop rains bright green. The options' glow colour returns when it ends.

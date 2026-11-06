@@ -105,14 +105,7 @@ static void drawBody(int d, int cx, int y) {
 // y0 (from the centre), travels dx, lifts in an arc `lift` high, and swings on an orbit of radius rad (+ grow at the arc's top; x
 // twice y) turning fa per phase step, fk apart
 struct Shuf { int8_t n, sp, gap, x0, y0, kx, dx, lift, rad, grow, fa, fk; };
-static const Shuf SHUF[6] = {
-    { 1, 5, 0, -22, 5, 0, 44, 0, 0, 0, 0, 0 },          // a mechanical bridge: a card zaps straight across
-    { 8, 2, 8, 0, 6, 0, 0, 0, 17, 0, 4, 0 },            // a carousel: eight cards orbit on eight arms
-    { 1, 6, 0, -22, 4, 0, 0, 12, 0, 0, 0, 0 },          // an overhand chop: a card hops off the deck in one hand
-    { 6, 4, 11, 22, 6, 0, -44, 25, 0, 0, 0, 0 },        // a spring: a fountain of cards arcs hand to hand
-    { 8, 1, 0, 0, 4, 0, 0, 0, 0, 27, 0, 32 },           // a cannon blast: cards burst out and get swept back
-    { 7, 2, 9, -30, 26, 10, 0, 40, 3, 0, 8, 40 },       // a breeze: cards float up in waves, weaving, and rain back down
-};
+#define SHUF ((const Shuf *)(wh_tabs + T_SHUF))   // the six styles (tools/tables.py SHUF)
 enum { SHUF_T = 54, DEAL_T0 = 54, DEAL_EACH = 5, DEAL_FLY = 12 };
 // each dealer's styles: the shuffle (low nibble), the deal (high). The newer three borrow: the doctor the breeze and the lob,
 // the scarecrow the cannon and the zigzag, the doll the carousel and the spin

@@ -197,7 +197,7 @@ static void shopRoll() {                                 // three offers, four o
 static void openShop() {
     timed = bonusOn = false;
     shopRoll();
-    shopSel = shopMode = 0;
+    shopMode = 0; if (shopSel > shopN + 1) shopSel = shopN + 1;   // the cursor stays where it was last visit
     state = SHOP; note = 0;
     saveRun();
 }

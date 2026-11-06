@@ -6,7 +6,7 @@ static const uint32_t CARD_HASH = 0xE4D2EBC4u;
 static const uint32_t CARD_ART = 512, CARD_SONG = 10752, CARD_TEXT = 88576, CARD_SFX = 95232, CARD_SET = 99840;
 static const uint32_t CARD_STAGE = 97792;
 static const uint8_t STAGE_N = 4, STAGE_TXG = 12, STAGE_STRS = 21;
-static const uint16_t SFX_LEN = 642, SFX_COUNT = 28, JT_LEN = 420, MISC_LEN = 311, TAB_LEN = 941, T_RING = 0, T_DL = 126, T_PART = 216, T_RANK8 = 294, T_SUIT7 = 398, T_PM = 426, T_BGORD = 494, T_HINTW = 502, T_BL = 517, T_RANKCH = 529, T_LVCH = 543, T_HMULT = 552, T_HCHIPS = 561, T_HOTPAL = 570, T_SCNBG = 579, T_CARDDIM = 600, T_DIM = 616, T_SHIM = 632, T_RAMP2 = 648, T_RAMP = 669, T_SIN32 = 690, T_THREMAP = 722, T_THDIM = 738, T_KSONG = 754, T_LTK = 767, T_RSH = 774, T_COMBO = 781, T_EP = 789, T_BWS = 797, T_BHS = 802, T_STYLE = 807, T_DEALS = 816, T_MG = 834, T_PXYS = 846, T_FCOL = 861, T_LAB = 869, T_DR = 879, T_OPTM = 895, T_HANDP = 909, T_SUIT5 = 921;
+static const uint16_t SFX_LEN = 642, SFX_COUNT = 28, JT_LEN = 420, MISC_LEN = 311, TAB_LEN = 1013, T_RING = 0, T_DL = 126, T_PART = 216, T_RANK8 = 294, T_SUIT7 = 398, T_PM = 426, T_SHUF = 494, T_BGORD = 566, T_HINTW = 574, T_BL = 589, T_RANKCH = 601, T_LVCH = 615, T_HMULT = 624, T_HCHIPS = 633, T_HOTPAL = 642, T_SCNBG = 651, T_CARDDIM = 672, T_DIM = 688, T_SHIM = 704, T_RAMP2 = 720, T_RAMP = 741, T_SIN32 = 762, T_THREMAP = 794, T_THDIM = 810, T_KSONG = 826, T_LTK = 839, T_RSH = 846, T_COMBO = 853, T_EP = 861, T_BWS = 869, T_BHS = 874, T_STYLE = 879, T_DEALS = 888, T_MG = 906, T_PXYS = 918, T_FCOL = 933, T_LAB = 941, T_DR = 951, T_OPTM = 967, T_HANDP = 981, T_SUIT5 = 993;
 // how many strings each text group holds (card_text.py GROUPS and MISC); the sketch static_asserts its TX_* enums against these
 static constexpr uint16_t C_PRE = 0, C_FCLS = 40, C_SRC = 53, CT_JSPLIT = 20, CT_G0 = 53, CT_G1 = 28, CT_G2 = 30, CT_G3 = 41, CT_G4 = 47, CT_G5 = 20, CT_G6 = 10, CT_G7 = 28, CT_G8 = 18, CT_G9 = 8, CT_G10 = 65, CT_G11 = 388, CT_MISC = 34;
 // which song plays where, and the version (tools/songs.py)
@@ -18,4 +18,4 @@ static constexpr uint16_t C_PRE = 0, C_FCLS = 40, C_SRC = 53, CT_JSPLIT = 20, CT
 #define SG_BONUS 8
 #define SG_PAUSE 11
 #define NSTAGE 13                                        // the stage songs
-#define WH_VERSTR "V1.3.15"
+#define WH_VERSTR "V1.3.16"

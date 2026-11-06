@@ -62,9 +62,18 @@ BGORD = [0, 7, 8, 9, 10, 11, 12, 7]                  # AUTO: night n's PART row 
 
 # the glyph tables of Art.h that go to RAM as well (name, row length): make_card.py takes them out of ArtCard.h
 FROM_ART = [('RANK8', 8), ('SUIT7', 7)]
+SHUF = [
+    1, 5, 0, -22, 5, 0, 44, 0, 0, 0, 0, 0,          # a mechanical bridge: a card zaps straight across
+    8, 2, 8, 0, 6, 0, 0, 0, 17, 0, 4, 0,            # a carousel: eight cards orbit on eight arms
+    1, 6, 0, -22, 4, 0, 0, 12, 0, 0, 0, 0,          # an overhand chop: a card hops off the deck in one hand
+    6, 4, 11, 22, 6, 0, -44, 25, 0, 0, 0, 0,        # a spring: a fountain of cards arcs hand to hand
+    8, 1, 0, 0, 4, 0, 0, 0, 0, 27, 0, 32,           # a cannon blast: cards burst out and get swept back
+    7, 2, 9, -30, 26, 10, 0, 40, 3, 0, 8, 40,       # a breeze: cards float up in waves, weaving, and rain back down
+]
 # the game's own tables (Gfx.h ...), the same bytes as the arrays they replace: T_<name>
 EXTRA = [
     ('PM', PM),
+    ('SHUF', SHUF),   # Dealers.h Shuf, 12 bytes a style
     ('BGORD', BGORD),   # Bonus.h drawPauseMenu (TX_ values: a static_assert there)
     ('HINTW', list(b'PICK\0PLAY\0TOSS\0')),
     ('BL', [20, 88, 60, 50, 10, 108, 50, 60, 0, 128, 20, 80]),

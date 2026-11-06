@@ -138,13 +138,14 @@ static void drawArt(const uint8_t *a, int x, int y, int sc = 1, bool black = fal
 __attribute__((noinline)) static void glyphH(const uint8_t *rows, int n, int w, int x, int y, uint8_t col, int rh) {
     for (int r = 0; r < n; r++) {
         uint8_t b = rows[r];
-        int c = 0, y0 = y + r * rh / 4, h = y + (r + 1) * rh / 4 - y0;
+        int c = 0, y0 = y + (r * rh >> 2), h = y + ((r + 1) * rh >> 2) - y0;
         while (c < w) {
             if (!(b & (0x80 >> c))) { c++; continue; }
             int s0 = c;
             while (c < w && (b & (0x80 >> c))) c++;
-            if (h == 1) hline(x + s0 * rh / 4, y0, c * rh / 4 - s0 * rh / 4, col);   // (a one-pixel row: hline is cheaper than fillRect)
-            else gfx_fillRect(x + s0 * rh / 4, y0, c * rh / 4 - s0 * rh / 4, h, col);
+            const int xs = x + (s0 * rh >> 2), ww = (c * rh >> 2) - (s0 * rh >> 2);
+            if (h == 1) hline(xs, y0, ww, col);   // (a one-pixel row: hline is cheaper than fillRect)
+            else gfx_fillRect(xs, y0, ww, h, col);
         }
     }
 }
@@ -394,8 +395,7 @@ static void drawFaceBig(int x, int y, Card c, uint8_t fr) {
     int W = BWS[cardSz], H = BHS[cardSz];
     bool court = c.r >= 9 && c.r <= 11, hg = W >= 42;
     rr3(x + 2, y + 3, W, H, P_DARK);
-    rr3(x, y, W, H, P_INK);
-    rr3(x + 1, y + 1, W - 2, H - 2, fr == F_PICK ? P_GOLD : P_GLOW);
+    rim(x, y, W, H, P_INK, fr == F_PICK ? P_GOLD : P_GLOW, 3);
     rr2(x + 3, y + 3, W - 6, H - 6, P_CARD);
     uint8_t col = suitCol(c.s);
     int rs = (W >= 34) + 1;                              // the rank: x2 from 34 wide, never covered by the court art
@@ -418,8 +418,7 @@ static void drawFaceBig(int x, int y, Card c, uint8_t fr) {
 static void drawFaceBig(int x, int y, Card c, uint8_t fr) {
     int W = BWS[cardSz], H = BHS[cardSz];
     rr3(x + 2, y + 3, W, H, P_DARK);
-    rr3(x, y, W, H, P_INK);
-    rr3(x + 1, y + 1, W - 2, H - 2, fr == F_PICK ? P_GOLD : P_GLOW);
+    rim(x, y, W, H, P_INK, fr == F_PICK ? P_GOLD : P_GLOW, 3);
     rr2(x + 3, y + 3, W - 6, H - 6, P_CARD);
     uint8_t col = suitCol(c.s);
     bool court = c.r >= 9 && c.r <= 11;
@@ -881,8 +880,7 @@ static void drawShop() {
 static void drawEnd() {
     bool won = state == WON;
     drawFelt();
-    rr3(6, 63, 116, 24, P_GOLDDK);
-    rr3(7, 64, 114, 22, P_BG);
+    rim(6, 63, 116, 24, P_GOLDDK, P_BG, 3);
     if (won) {
         if ((fc & 3) == 0) confetti();
         int jump = isinK(10); if (jump > 0) jump = -jump;
