@@ -6,7 +6,7 @@
 // Every third round is a boss round with a twist, beaten bosses open a timed bonus stage, hands level up as you play
 // them, and after round 8 the run can go on, endless. The title also offers a 60-second TURBO arcade.
 #include <CHGame.h>
-#pragma GCC optimize("no-jump-tables","no-caller-saves","reorder-blocks","reorder-blocks-algorithm=stc","no-tree-loop-im","no-schedule-insns2","no-move-loop-invariants","no-lra-remat","no-tree-forwprop","no-tree-dominator-opts","no-shrink-wrap","no-ira-hoist-pressure","no-ipa-pure-const","no-partial-inlining")   // (the last seven: measured smaller)
+#pragma GCC optimize("no-jump-tables","no-caller-saves","reorder-blocks","reorder-blocks-algorithm=stc","no-tree-loop-im","no-schedule-insns2","no-move-loop-invariants","no-lra-remat","no-tree-forwprop","no-tree-dominator-opts","no-shrink-wrap","no-ira-hoist-pressure","no-ipa-pure-const","no-partial-inlining")
 
 enum { HANDN = 8, JMAX = 5, ROUNDS = 8, PLAYS = 4, DISCS = 3 };
 enum State : uint8_t { TITLE, PLAY, RESULT, SHOP, OVER, WON, PAUSED, DEAL, BONUS, TIMEUP, MINI, BSEL };
@@ -34,12 +34,11 @@ static const char *cardText(uint8_t g, uint8_t i);
 // continue, so it is left out there (the simulator's debug build keeps it for the save tests).
 #if CHGAME_DEBUG && !defined(CHSIM)
 #define PERF_BUILD 1
-// PERF_LEAN (defined: with everything in the board's debug build is about 51,930 B, over its 50,944; with the cuts it is about 50,850): the cosmetic cuts the debug build makes (a raven,
-// the dark eyes, the plain rank/face stand-ins, the INDEX/SONG/EQ lines, the title's BONUS and its stage select). If later work pushes it over again, Synth.cpp's
-// WH_NOEQ (the EQ presets) brings it down by another 120 B or so (define it for the debug build there).
+// PERF_LEAN: cosmetic cuts that fit the board's debug build in flash (the raven, the dark eyes, plain rank/face stand-ins,
+// the INDEX/SONG/EQ lines, the title's BONUS and its stage select). Synth.cpp's WH_NOEQ drops the EQ presets for more room.
 #define PERF_LEAN 1
 #endif
-// the newer native bonus stages (Minis.h), one switch each (1 in, 0 out); NEW_STAGES: any of them in (the shared parts: the
+// the native bonus stages (Minis.h), one switch each (1 in, 0 out); NEW_STAGES: any of them in (the shared parts: the
 // list's scroll, the score line, the result pause: NEW_SCAFFOLD). The board's debug build has no room for them and never picks them.
 #ifdef PERF_BUILD
 #define NEW_RAVEN 0

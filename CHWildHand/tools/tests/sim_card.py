@@ -4,7 +4,7 @@ settings win over the flash save at the next boot; a block that is neither the f
 is ignored.
 
 python tools/tests/sim_card.py   (from CHWildHand/CHWildHand; works on a copy of sdcard/WILDHAND.DAT)
-The simulator's card is read-only unless $WH_CARDW is set; this test sets it for the sessions that should write.
+The simulator's card is read-only unless $WH_CARDW is set; this test sets it for the sessions that write.
 """
 import os
 import re

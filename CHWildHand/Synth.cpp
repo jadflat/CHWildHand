@@ -20,7 +20,7 @@
 
 namespace {
 
-// the sine from its quarter (SINEQ, 0..64): the table is mirror-symmetric, so this is the old 256-entry table exactly
+// the sine from its quarter (SINEQ, 0..64): the table is mirror-symmetric, so it reproduces the full 256-entry table exactly
 static inline int sine(unsigned i) {
     i &= 255;
     int j = i & 127;
@@ -29,7 +29,7 @@ static inline int sine(unsigned i) {
 }
 
 #ifndef SYN_GAIN
-#define SYN_GAIN 28                                       // 1.75 x (loudest: the board was barely audible at 12; re-test the idle whine): two voices at a steady level, the peaks squashed by a soft knee (it was 6 x, near-hard clipped: a buzzing square)
+#define SYN_GAIN 28                                       // output gain: two voices at a steady level, peaks squashed by a soft knee
 #endif
 constexpr uint16_t ENV_DIV = SYN_RATE / 122;            // samples between envelope ticks (about 8 ms)
 

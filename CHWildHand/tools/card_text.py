@@ -25,7 +25,7 @@ DEALERS += [("PLAGUE DOCTOR", "TOSS PAYS $3, 1 LESS"), ("SCARECROW", "5 CARDS: +
 assert all(len(e) <= 20 for _, e in DEALERS)
 # block 8 (TX_DNAME, TX_DEDGE = NDEAL in Bonus.h): the nine dealers' names, then their edges
 DEAL2 = [n for n, _ in DEALERS] + [e for _, e in DEALERS]
-BONUS = ([""] * 12 +                    # (where the six dealers' names and edges were: they are in block 8 now, with the newer three)
+BONUS = ([""] * 12 +                    # (blank: the dealers' names and edges are in block 8)
          ["CURSED GOLD", "FREE WILD CARD", "X2 NEXT ROUND",
           "", "PAIRS OR BETTER", "HIGHER OR LOWER?", "CALL 4 OF 5", "PICK HIGHER CARD", "BEST OF THREE", "6 PAIRS, 4 MISSES", "MISS SWAPS UNSEEN",
           "LOSE HALF $, 1 HAND", "THE GOLD IS YOURS", "+$12 (NO ROOM)", "A NEW WILD CARD", "ALL HANDS SCORE X2",

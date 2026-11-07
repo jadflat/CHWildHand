@@ -18,7 +18,7 @@ PAL = {
 # 'c' must be distinguishable at draw time: store it as index 4 but via a remap table the
 # card code swaps 4 -> RED for red suits.  Outlines that must stay black use 'k'... so 'c'
 # gets its own code below.
-CCODE = 15   # never used: we store 'c' as 3 (RED) and remap 3 -> BLK for black suits
+CCODE = 15   # unused: 'c' is stored as 3 (RED) and remapped to BLK for black suits
 
 ART = {}
 
@@ -264,7 +264,7 @@ grid('W7', [  # ACES: a card with an open eye
  "..kkkkkkkkkkkk..",
 ])
 
-# ---- Wild Jack, now the Undertaker who keeps the shop (16x16): leering, blinking, hungry, reacting
+# ---- the Undertaker who keeps the shop (16x16): leering, blinking, hungry, reacting
 JACK_TOP = [   # (2026-11 polish: a sheened top hat with a blood band, a bone-pale skull in the brim's shadow)
  "....kkkkkkkk....",
  "....kbbkkkkk....",
@@ -335,7 +335,7 @@ def main():
     root = os.path.dirname(here)
     fix_widths()
     # WINE (15) is also the skip code, so wine pixels use a separate escape:
-    # we store wine as colour 0 (BG) and the drawer maps 0 -> 15. BG is never used in art.
+    # wine is stored as colour 0 (BG) and the drawer maps 0 -> 15; BG is otherwise unused in art.
     for n, rows in ART.items():
         for r in rows:
             assert 'z' not in r, n

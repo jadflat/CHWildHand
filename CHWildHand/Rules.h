@@ -15,7 +15,7 @@ static uint8_t mode, hlv[9], boss = 255, deadSuit, dealer, dealerBase, maxPick =
 static bool hidden[HANDN], timed, bonusOn, x2Pend, x2Now, penalty, showLv, bonusWon, prizeFull;
 static uint8_t runOff;                                   // the run counter (the AUTO rotation)
 static uint8_t colDue = 1;   // 1: read the COLORS options' colours (Gfx.h applyCol), 2: the THEME preset's options first
-// (SEANCE, GALLOWS and DEAD WHEEL are scripts now, MK_VM + 0, 1, 2: their ids here only keep text block 7 in place)
+// (SEANCE, GALLOWS and DEAD WHEEL are scripts, MK_VM + 0, 1, 2: their ids here only keep text block 7 in place)
 enum { MK_SPEED, MK_HILO, MK_DUEL, MK_PAIRS, MK_SEANCE, MK_GALLOWS, MK_WHEEL, MK_RAVEN, MK_GHOULS, MK_COUNT, NMINI, NNEW = NMINI - MK_SEANCE, MK_VM = NMINI };
 // the stages that can come up (the NEW_* switches in the .ino): the first four, or a list of the ones in, then the scripts (StageVM.h)
 #if !NEW_STAGES
@@ -146,7 +146,7 @@ static void jrun(uint8_t j, uint8_t ev, unsigned id) {        // slot j's rules 
         if (card) cR = cS = 255;
     }
 }
-// the newer dealers' edges and hexes' twists are records after the wild cards' (tools/jokers.py EXTRA): dealers 6-8, hexes 5-6; not in a timed play
+// the later dealers' edges and hexes' twists are records after the wild cards' (tools/jokers.py EXTRA): dealers 6-8, hexes 5-6; not in a timed play
 static void xrun(uint8_t ev) {
     if (timed) return;
     unsigned d = dealer - 6u, b = boss - 5u;

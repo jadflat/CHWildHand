@@ -54,10 +54,9 @@ def bars(*bs):
 
 SONGS = []
 
-# ---- the calm pass (v1.1): the music was busy and noisy. Every older song is thinned when it is added: one voice of
-# tune and one of bass (the echo voice is gone), no repeated-note stutter, no one-step ornaments, a bass that moves
-# at most twice a bar, a soft kick once a bar (no snare or hats), shrill notes folded down, FM tones purer, and the
-# tempo 12% slower.
+# ---- calm pass: each song is thinned when added: one tune voice and one bass voice, no repeated-note stutter,
+# no one-step ornaments, a bass that moves at most twice a bar, a soft kick once a bar (no snare or hats),
+# shrill notes folded down, purer FM tones, tempo 12% slower.
 CALM_SLOW = 1.12
 LEAD_TOP = 86                                   # D6, about 1.2 kHz: nothing shriller
 
@@ -191,7 +190,7 @@ add('AMBNIGHT', 300, [(1, 10, 1, 2, 72, 0, 60), (1, 8, 1, 2, 70, 0, 60), (2, 20,
 HEART = [1, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
 HEART2 = [1, 0, 1, 0, 4, 0, 4, 0, 2, 0, 1, 0, 4, 0, 4, 8]
 
-# ---- 12..15 dungeon-synth, original (v1.1): slow minor modes, a bell or a soft flute, a drone that moves every two
+# ---- 12..15 dungeon-synth, original: slow minor modes, a bell or a soft flute, a drone that moves every two
 # bars, no drums. 80 to 92 seconds a loop; each phrase is four bars. They join the stage songs.
 def phrases(*ps):
     return sum((sec(p, 4) for p in ps), [])
@@ -241,7 +240,7 @@ VGB = phrases(bars("C3:32", "Ab2:32"), bars("Bb2:32", "G2:32"), bars("C3:32", "F
 add('VIGIL', 185, [(1, 22, 1, 4, 78, 1, 46), (1, 12, 1, 3, 84, 0, 54), (2, 20, 2, 3, 0, 2, 0)], VG, VGB, HEART, steps=384, calm=False)
 
 
-# ---- 16..18 upbeat jazz, original (v1.3.9): swing on a triplet grid (a bar is 12 steps, a beat 3: a swung eighth pair is
+# ---- 16..18 upbeat jazz, original: swing on a triplet grid (a bar is 12 steps, a beat 3: a swung eighth pair is
 # 2 + 1), a walking bass in quarters, a ride pattern with a feathered kick, bright syncopated tunes. They join the stage songs.
 def sw(*bs):                        # bars of 12 steps
     out = []

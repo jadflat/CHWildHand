@@ -7,7 +7,7 @@ import os
 
 PRIVATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'songs_private.py')
 PUBLIC = os.environ.get('PUBLIC') == '1' or not os.path.exists(PRIVATE)
-VERSION = '1.3.10' if PUBLIC else '1.3.33'   # the public release's number; the local build counts on from its own
+VERSION = '1.3.33'
 
 if PUBLIC:   # 0 AMBER, 1 AMBNIGHT, 2 CRYPT, 3 CATACOMB, 4 ASHEN, 5 VIGIL, 6 BLUFF, 7 HIGHCARD, 8 ALLIN
     ID = dict(TITLE=2, SHOP_A=6, SHOP_B=0, OVER=5, TURBO=8, BONUS=4, PAUSE=1)

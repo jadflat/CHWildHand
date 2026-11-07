@@ -1,17 +1,23 @@
-# Wild Hand V1.3.10 - first public release
+# Wild Hand 1.3.33
 
-A poker roguelike for the CHGame handheld (128x128 screen, piezo, SD card).
+A horror poker roguelike for the CHGame handheld.
 
 ## Install
-1. Copy `WILDHAND.DAT` to the root of the SD card, next to the GAMES folder.
-2. Copy `WILDHAND.CHG` into the card's games folder and start it from the menu.
 
-## What is in it
-- Six dealers, boss rounds, a shop, jokers and a stage select.
-- Backdrops, card colour options and light card faces.
-- Original music in ambient, dungeon-synth and jazz styles, played from the SD card file.
+1. Copy `WILDHAND.DAT` to the root of the SD card, next to the `GAMES` folder.
+2. Copy `WILDHAND.CHG` into `GAMES/GAMES` and start it from the menu.
+
+## Highlights
+
+- Six monster dealers, hex nights, 24 wild cards with combos, endless mode and Turbo Terror.
+- Twelve bonus stages, including Blackjack Dash, which can also be played from the title.
+- Card colour themes (with colour-blind presets), animated backdrops and five card sizes.
+- Original ambient, dungeon-synth and jazz music streamed from the SD card.
 - Pause menu with save and continue.
 
-## Credits
-- Game, art and music by Jadflat, MIT licence (see `LICENSE`).
-- Built on [CHGame](https://github.com/bateske/CHGame) by Kevin Bates (bateske), Apache-2.0, vendored unchanged in `chgame/` (see `NOTICE` and `THIRD-PARTY.md`).
+See `CHANGELOG.md` for the full history.
+
+## Licence
+
+Game, art and music by Jadflat, MIT (`LICENSE`). Built on [CHGame](https://github.com/bateske/CHGame) by Kevin Bates
+(bateske), Apache-2.0, vendored unchanged in `chgame/` (`NOTICE`, `THIRD-PARTY.md`).

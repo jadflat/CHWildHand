@@ -15,7 +15,7 @@ static const uint8_t BASEPAL[16][3] = {
 #define HOTPAL ((const uint8_t (*)[3])(wh_tabs + T_HOTPAL))   // (in RAM, from the card: tools/tables.py)   // FELT, DARK, FELTLT
 
 // ---------------------------------------------------------------- hooks
-// Named events for the sound worker: put a funny sound in gag(). Nothing here changes the game.
+// Named events for the sound hooks; gag() maps them to sounds. They do not affect the game.
 enum class Gag : uint8_t { Deal, Pick, Drop, Play, Tally, Pop, BigHand, Clear, Bust, Jackpot, Buy, Broke, Full, Peek, Twitch, Riffle, HeatUp, Blink, Beat };
 static void gagHook(Gag g);                      // the sounds (Bonus.h)
 static void gag(Gag g) { gagHook(g); }
@@ -27,7 +27,7 @@ static void drawDealerHead(int x, int y, int sc); static void dealerTick();
 static void drawPauseMenu(); static void drawTitleMenu(); static void endPrompt(int y);
 
 // ---------------------------------------------------------------- helpers
-// The library's RAM-resident routines are 8-byte far calls from flash; one hop each makes every call site 4 bytes.
+// Thin wrappers: the library's RAM-resident routines are far calls, so one shared hop keeps call sites small.
 __attribute__((noinline)) static void hline(int x, int y, int w, uint8_t c) { gfx_hline(x, y, w, c); }
 struct GfxClip { int16_t x0, y0, x1, y1; };             // (CHGfx_internal.h: the clip rectangle, half-open)
 extern GfxClip gfx__clip;
@@ -135,9 +135,8 @@ __attribute__((noinline)) static void glyphH(const uint8_t *rows, int n, int w, 
 static void glyph(const uint8_t *rows, int n, int w, int x, int y, uint8_t col, int sc = 1) { glyphH(rows, n, w, x, y, col, sc * 4); }
 #ifdef PERF_LEAN   // the board's debug build is out of flash: a same-cost stand-in (and the old fixed-size faces below)
 static void rank15(int r, int x, int y, uint8_t col) { glyph(RANK8[r], 8, r == 8 ? 8 : 6, x, y, col); }
-#else
-static void rankS(int r, int x, int y, uint8_t col, int rh) { glyphH(RANK8[r], 8, r == 8 ? 8 : 6, x, y, col, rh); }
 #endif
+static void rankS(int r, int x, int y, uint8_t col, int rh) { glyphH(RANK8[r], 8, r == 8 ? 8 : 6, x, y, col, rh); }
 #define SUIT5 ((const uint8_t (*)[5])(wh_tabs + T_SUIT5))   // (in RAM, from the card: tools/tables.py)
 // a suit pip, 5x5 or 7x7, at sc times its size
 __attribute__((noinline)) static void suit5(int s, int x, int y, uint8_t col, int sc = 1) { glyphH(SUIT5[s], 5, 5, x, y, col, sc * 4); }

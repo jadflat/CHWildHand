@@ -1,4 +1,0 @@
-wait 20
-say M 12
-wait 5
-snap a
