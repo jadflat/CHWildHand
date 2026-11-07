@@ -9,7 +9,7 @@
                 their text is one more text block after card_text.GROUPS (STAGE_TXG)
   CARD_SFX      the sound effects (tools/sfx_src.txt): start steps, flags, steps; then the wild cards' rule table (tools/jokers.py);
                 loaded into RAM when the card opens
-  CARD_SET      the last block, 0xFF: the pause menu's settings are kept here (Card.cpp putSettings), so another game's save cannot
+  CARD_SET      the last two blocks, 0xFF: the save mirror (Card.cpp putSave), so another game's save cannot
                 take them; not in the hash, and the game never writes any other block of the file
 
 Reads Art.h (tools/art.py), Art2.h (tools/art2.py) and Music.h (tools/make_music.py) and writes:
@@ -156,7 +156,7 @@ stages = padded(stages)
 body = pics + songs + texts + sfx + stages
 h = zlib.crc32(body) & 0xffffffff
 head = padded(b'WILDHAND' + struct.pack('<I', h))
-dat = head + body + bytes([0xFF]) * 512                 # (the settings block: after the hashed part)
+dat = head + body + bytes([0xFF]) * 1024                 # (the settings block: after the hashed part)
 for d in (os.path.join(ROOT, 'dist') if not sg_cfg.PUBLIC else os.path.join(ROOT, 'dist', 'public'), os.path.join(SK, 'sdcard')):
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, 'WILDHAND.DAT'), 'wb').write(dat)
@@ -175,7 +175,7 @@ open(os.path.join(SK, 'CardIndex.h'), 'w', newline='').write(
     'static const uint32_t CARD_STAGE = %d;\n'
     'static const uint8_t STAGE_N = %d, STAGE_TXG = %d, STAGE_STRS = %d;\n'
     'static const uint16_t SFX_LEN = %d, SFX_COUNT = %d, JT_LEN = %d, MISC_LEN = %d, TAB_LEN = %d, %s;\n' % (h, art_blk * 512, song_blk * 512, song_blk * 512 + len(songs),
-                                                         song_blk * 512 + len(songs) + len(texts), len(dat) - 512,
+                                                         song_blk * 512 + len(songs) + len(texts), len(dat) - 1024,
                                                          song_blk * 512 + len(songs) + len(texts) + len(sfx), stage_n, len(card_text.GROUPS), len(stage_txt), sfx_len, len(efx), len(jt), len(misc), len(tab), ', '.join('%s = %d' % kv for kv in taboff.items())))
 import colours                                 # the colour block's offsets (Gfx.h applyCol)
 counts = ['%s = %d' % kv for kv in colours.data()[1].items()] + ['CT_JSPLIT = %d' % card_text.JSPLIT] + ['CT_G%d = %d' % (i, len(g)) for i, g in enumerate(card_text.GROUPS)] + ['CT_MISC = %d' % len(card_text.MISC)]

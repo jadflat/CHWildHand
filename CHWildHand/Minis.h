@@ -211,7 +211,7 @@ static void miniUpdate(bool up, bool dn, bool lf, bool rt, bool a) {
 static void smallCard(int x, int y, Card c, bool up, uint8_t edge) {
     frame(x, y, 16, 22, edge, up ? P_CARD : P_WINE);
     if (!up) { gfx_rect(x + 3, y + 3, 10, 16, P_SHADE); pix(x + 8, y + 11, P_RED); return; }
-    glyph(RANK8[c.r], 8, 6, x + 2, y + 2, suitCol(c.s));
+    rankS(c.r, x + 2, y + 2, suitCol(c.s), 4);
     suit7(c.s, x + 7, y + 12, suitCol(c.s));
 }
 // ---- GRAVES: inside a coffin full of snakes. The far end sways with the creak (the depth); the lid has a crack of

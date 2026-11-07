@@ -16,6 +16,7 @@ A script:
     .str HIT HIT!               a string for TEXT: $HIT (TEXT x, y, $s, colour, a, b: a format with up to two %d; x < 0 centres it)
     .init / .update / .draw     the three programs (init once when the stage is loaded, update each frame, draw each frame)
     label:  OP arg, arg ...     arguments: numbers, constants, registers (r0..r31 or a .reg name), labels, $strings
+Jumps are relative to the next instruction, biased by JB (1 byte from 64 back to 158 forward, else 3 bytes: keep loops and exits close).
 Registers: W r0 (wins), L r1 (losses), F r2 (frames), LV r3 (level: night / 3, at most 5), EZ r8 (debug cheat), FC r9 (frame counter);
 the rest (r4..r7, r10..r31) are the script's, all 0 at the start.
 Names: the colours (GOLD, RED ... as in Gfx.h without P_), the buttons (BTN_A, BTN_B, BTN_UP, BTN_DOWN, BTN_LEFT, BTN_RIGHT), the
@@ -30,16 +31,17 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 # name, destination register first?, value arguments (StageVM.h VMOPS: the same order)
 OPS = [('END', 0, 0), ('SET', 1, 1), ('ADD', 1, 2), ('SUB', 1, 2), ('MUL', 1, 2), ('DIV', 1, 2), ('MOD', 1, 2), ('AND', 1, 2),
-       ('OR', 1, 2), ('SHR', 1, 2), ('MIN', 1, 2), ('MAX', 1, 2), ('RND', 1, 1), ('SIN', 1, 2), ('ABS', 1, 1), ('LD', 1, 1), ('ST', 0, 2),
+       ('DRAW', 1, 0), ('SHR', 1, 2), ('MIN', 1, 2), ('MAX', 1, 2), ('RND', 1, 1), ('SIN', 1, 2), ('ABS', 1, 1), ('LD', 1, 1), ('ST', 0, 2),
        ('JMP', 0, 1), ('JEQ', 0, 3), ('JNE', 0, 3), ('JLT', 0, 3), ('JGE', 0, 3), ('DJNZ', 1, 1), ('IN', 1, 1), ('EDGE', 1, 1),
        ('SFX', 0, 2), ('FLASH', 0, 1), ('BURST', 0, 6), ('WIN', 0, 0), ('LOSE', 0, 0),
-       ('FRECT', 0, 5), ('RECT', 0, 5), ('RRECT', 0, 5), ('FCIRC', 0, 4), ('CIRC', 0, 4), ('LINE', 0, 5), ('HLINE', 0, 4),
-       ('TEXT', 0, 6), ('CARD', 0, 5), ('SUIT', 0, 5), ('HEAD', 0, 3), ('HAND', 0, 2)]
+       ('FRECT', 0, 5), ('RECT', 0, 5), ('FLIP', 0, 5), ('FCIRC', 0, 4), ('CIRC', 0, 4), ('LINE', 0, 5), ('HLINE', 0, 4),
+       ('TEXT', 0, 6), ('CARD', 0, 5), ('SUIT', 0, 5), ('HEAD', 0, 3), ('HAND', 0, 2), ('BJROW', 0, 4)]
 OPN = {n: (i, d, k) for i, (n, d, k) in enumerate(OPS)}
 JUMPS = ('JMP', 'JEQ', 'JNE', 'JLT', 'JGE', 'DJNZ')
 COLOURS = ['BG', 'FELT', 'CARD', 'RED', 'INK', 'GOLD', 'GREY', 'DARK', 'TEXT', 'CHIP', 'SKIN', 'GLOW', 'FELTLT', 'SHADE', 'GOLDDK', 'WINE']
 BASEREG = {'W': 0, 'L': 1, 'F': 2, 'LV': 3, 'EZ': 8, 'FC': 9}
 BASECONST = dict({c: i for i, c in enumerate(COLOURS)}, BTN_A=1, BTN_B=2, BTN_UP=4, BTN_DOWN=8, BTN_LEFT=16, BTN_RIGHT=32)
+JB = 64                                  # (StageVM.h VM_JB: the same)
 HDR = 6
 MAXLEN = 448                                  # (StageVM.h VM_CODE)
 
@@ -156,12 +158,19 @@ class Stage:
                     out.append(i | (128 if same else 0))
                     if d:
                         out.append(self.reg(args[0], where))
-                    for x in vals[1:] if same else vals:
-                        out += self.operand(x, where, labels, sidx)
+                    ops = vals[1:] if same else vals
+                    for n, x in enumerate(ops):
+                        if op in JUMPS and n == len(ops) - 1:           # (a jump is relative to the next instruction)
+                            t = self.value(x, where, labels)
+                            rel = t - (HDR + len(out) + 1) + JB
+                            out += bytes([rel]) if 0 <= rel <= 222 else self.operand(str(t - (HDR + len(out) + 3) + JB), where, labels, sidx)
+                        else:
+                            out += self.operand(x, where, labels, sidx)
                 segs.append(len(out) - s0)
             if newl == labels and size == len(out):
                 break
             labels, size = newl, len(out)
+        self.labels = labels
         upd = HDR + segs[0]
         drw = upd + segs[1]
         end = drw + segs[2]

@@ -1,0 +1,22 @@
+cal
+say Z 99
+wait 30
+tap DOWN
+wait 5
+tap A
+wait 12
+tap UP
+wait 6
+tap A
+wait 215
+tap A
+wait 32
+tap B
+wait 3
+snap f0
+wait 20
+snap f1
+wait 8
+snap f2
+wait 12
+snap f3

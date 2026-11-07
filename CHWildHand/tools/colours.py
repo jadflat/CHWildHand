@@ -11,12 +11,14 @@ per class: the build lightens or darkens each choice's ideal colour until it rea
 FACES = [('BONE', 0, (226, 216, 192)), ('WHITE', 0, (246, 246, 242)),
          ('BLACK', 1, (14, 14, 16)), ('GREY', 2, (46, 46, 50)), ('SLATE', 2, (26, 38, 66)), ('NAVY', 1, (12, 18, 78)),
          ('GREEN', 2, (12, 58, 22)), ('TEAL', 2, (4, 54, 60)), ('WINE', 2, (86, 10, 30)), ('PURPLE', 2, (58, 16, 90)),
-         ('BROWN', 2, (70, 38, 12)), ('LT GREY', 0, (200, 200, 204)), ('PALE TEAL', 0, (178, 230, 218))]   # (new faces at the end: saved indices keep)
+         ('BROWN', 2, (70, 38, 12)), ('LT GREY', 0, (200, 200, 204)), ('PALE TEAL', 0, (178, 230, 218)),
+         ('IVORY', 0, (250, 244, 222)), ('PLUM', 2, (70, 20, 56))]   # (new faces at the end: saved indices keep)
 BONE_CARD = (226, 216, 192)          # the palette's P_CARD (light texts) when the face is dark
 BONE_SHADE = (168, 158, 138)         # the palette's P_SHADE (shade lines) on a light face
 # the red suits: name, ideal colour (class 1 keeps the game's P_RED exactly)
 REDS = [('RED', (250, 52, 56)), ('ORANGE', (255, 128, 16)), ('PINK', (255, 96, 176)), ('GOLD', (240, 196, 24)),
-        ('VIOLET', (176, 112, 255)), ('BLUE', (60, 140, 255))]
+        ('VIOLET', (176, 112, 255)), ('BLUE', (60, 140, 255)),
+        ('TEAL', (40, 210, 190)), ('WHITE', (240, 240, 240))]
 # the black suits: name, ideal on a light face (P_INK, also the outlines everywhere: kept dark), ideal on a dark face (P_SHADE)
 BLACKS = [('MONO', (18, 12, 22), (132, 136, 148)), ('PURE', (0, 0, 0), (250, 250, 250)), ('BLUE', (14, 30, 110), (120, 180, 255)),
           ('GREEN', (6, 56, 22), (120, 230, 150)), ('BROWN', (64, 32, 8), (236, 196, 130)), ('CYAN', (0, 64, 72), (110, 230, 240)),
@@ -26,12 +28,14 @@ RAWK = 6                              # BLACKS from this index on are used as th
 HILITES = [('DK RED', (150, 24, 30), (236, 96, 90)), ('SILVER', (176, 184, 198), (244, 248, 255)), ('CYAN', (40, 184, 210), (160, 244, 255)),
            ('LIME', (130, 204, 60), (214, 255, 150)), ('PINK', (232, 98, 178), (255, 186, 230)),
            ('CHAR', (70, 70, 78), (150, 154, 166)), ('RED', (220, 40, 44), (255, 120, 110)), ('ORANGE', (240, 120, 20), (255, 190, 110)),
-           ('WHITE', (240, 240, 240), (255, 255, 255)), ('VIOLET', (150, 96, 230), (214, 180, 255)), ('GOLD', (214, 146, 50), (255, 212, 128))]   # (the old default GOLD moved to the end; new ones at the end: saved indices keep)
+           ('WHITE', (240, 240, 240), (255, 255, 255)), ('VIOLET', (150, 96, 230), (214, 180, 255)), ('GOLD', (214, 146, 50), (255, 212, 128)),
+           ('TEAL', (40, 170, 150), (150, 240, 225)), ('BLUE', (60, 120, 240), (160, 200, 255))]   # (the old default GOLD moved to the end; new ones at the end: saved indices keep)
 # the accents: the faces' edge rules and studs (P_GOLDDK) and the card backs (P_WINE)
 ACCENTS = [('BRASS', (106, 62, 24), (72, 14, 26)), ('STEEL', (78, 92, 112), (22, 32, 70)), ('JADE', (36, 104, 70), (12, 52, 36)),
            ('VIOLET', (100, 60, 140), (50, 20, 76)),
            ('BLACK', (34, 34, 40), (14, 14, 18)), ('RED', (150, 26, 26), (92, 10, 14)), ('BLUE', (40, 80, 170), (16, 36, 100)),
-           ('ORANGE', (182, 98, 20), (100, 44, 10)), ('GREY', (150, 150, 158), (56, 56, 66))]
+           ('ORANGE', (182, 98, 20), (100, 44, 10)), ('GREY', (150, 150, 158), (56, 56, 66)),
+           ('TEAL', (30, 110, 110), (10, 50, 56)), ('PINK', (170, 70, 120), (90, 24, 60))]
 # the THEME presets: name, then FACE, RED, BLACK, HILITE, ACCENT (indices). 0 is the default (all 0): THEME BONE resets the colours.
 # Every preset has red and black suits (RED 0, BLACK MONO or PURE); RG SAFE's pure black on white keeps them apart for protan and
 # deutan eyes too (colcheck.py: dE 35 / 54). At most eight presets: the THEME is saved in three bits (sv.music bits 5-7).

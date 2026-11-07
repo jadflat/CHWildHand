@@ -110,7 +110,7 @@ static void candles(int y0) {
 // ---- drifting things, one recipe a row (tools/tables.py PART): how many, two colours, speed | 32 falls | 64 blinks, w << 4 | h, the sway's
 // divisor. The rows: each area's motes (spores, embers, dust, ghost lights in four depths), the BG styles
 #define PART ((const uint8_t (*)[6])(wh_tabs + T_PART))
-static void drifts(const uint8_t *m) {
+__attribute__((noinline)) static void drifts(const uint8_t *m) {
     for (int i = 0; i < m[0]; i++) {
         int x = (i * 53 + 17 + isinF(2, i * 29) / m[5] - (parX >> 6)) & 127;
         int y = (((fc * (1 + (i & 3)) * (m[3] & 31)) >> (fxLow ? 4 : 3)) + i * 37) % 150;

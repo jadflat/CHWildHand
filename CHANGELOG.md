@@ -1,5 +1,59 @@
 # Changelog
 
+## V1.3.32
+
+- Blackjack Dash: an ace drawn on a soft 21 no longer leaves a total of 22 that wins.
+
+## V1.3.31
+
+- Blackjack Dash: your cards flip over left to right as they are dealt (the colour band is gone).
+- One save page instead of two (the game fills the flash).
+
+## V1.3.29
+
+- Blackjack Dash: the dealer's hold card turns over with a real flip (it narrows to an edge, then widens).
+
+## V1.3.28
+
+- Blackjack Dash: a new hand is dealt with an animation (the cards are uncovered left to right); the script is shrunk to fit.
+
+## V1.3.27
+
+- Blackjack Dash: after a split the dealer keeps his turned-over hold card for the second hand (no new dealer hand).
+## V1.3.26
+
+- Blackjack Dash: the button hints are spread to the screen edges, clear of the cards, with up and down arrows.
+
+- Blackjack Dash: dealt from a 4-deck shoe, two-line button hints, split on equal ranks, the dealer's hold card flips left to right.
+
+## V1.3.24
+
+- Blackjack Dash rules: the dealer's hold card is any rank (a J/Q/K counts 10, an ace 11); 7 cards per hand again; a 21 no longer stands by itself; one-line button hint.
+
+## V1.3.23
+
+- Blackjack Dash: every hand has its own slot (no overlap), hands move apart on a split (up to 3 hands, 4 cards each), the dealer stays the same across split hands.
+
+## V1.3.22
+
+- Blackjack Dash: your hand is centred; a split sets the other hand beside it (gold edge) and everything recentres, up to 3 splits.
+
+## V1.3.21
+
+- Blackjack Dash: the buttons are on screen (A hit, B stand, UP double, DOWN split); a split's waiting hand shows as a card beside yours. Smaller code (size flags).
+
+## V1.3.20
+
+Blackjack Dash: the dealer's hold card now turns over at the stand (the ranks run down to it).
+
+## V1.3.19
+
+- Blackjack Dash: UP doubles down, DOWN splits a pair (A hit, B stand). The bonus games' small cards show a 10 in full. Stage jumps are now relative (smaller scripts).
+
+## V1.3.17
+
+- New bonus stage: BLACKJACK DASH (hit or stand, bank 4 hands before the clock or 3 misses; a tie is a push).
+
 ## V1.3.16
 
 - The shop cursor stays where it was on the last visit.

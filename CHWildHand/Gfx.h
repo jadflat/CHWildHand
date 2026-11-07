@@ -41,10 +41,10 @@ __attribute__((noinline)) static void pix(int x, int y, uint8_t c) {   // gfx_pi
 static const uint8_t RRIN[15] = { 1, 2, 1, 3, 1, 1, 4, 2, 1, 1, 5, 2, 1, 1, 1 };
 __attribute__((noinline)) static void rrect(int x, int y, int w, int h, int r, uint8_t c, bool fill) {
     if (w <= 0 || h <= 0) return;
-    int m = (w < h ? w : h) / 2, cap = (w - 1) / 2, pv = 0;
+    int m = (w < h ? w : h) >> 1, cap = (w - 1) / 2, pv = 0;
     if (r > m) r = m;
     if (!fill && !r) { gfx_rect(x, y, w, h, c); return; }
-    const uint8_t *in = RRIN + r * (r - 1) / 2;
+    const uint8_t *in = RRIN + ((r * (r - 1)) >> 1);
     for (int i = 0; i < r; i++) {
         bool full = fill || !i;                                                // (the whole row; else the arc's two short spans)
         int v = in[i] > cap ? cap : in[i], len = full ? w - 2 * v : pv - v > 1 ? pv - v : 1;
@@ -99,23 +99,6 @@ static void drawArtE(const uint8_t *a, int x, int y, int s8, bool black = false)
     const uint8_t *p = card::at(CARD_ART + (uint32_t)(uintptr_t)a);    // a picture never crosses a card block
     if (!p) return;
     int h = p[1];
-    if (s8 == 16 && !(x & 1) && x >= gfx__clip.x0 && y >= gfx__clip.y0 && x + 2 * p[0] <= gfx__clip.x1 && y + 2 * h <= gfx__clip.y1) {   // double size on the screen, even x: a source pixel is one byte of two rows
-        p += 2;
-        for (int r = 0; r < h; r++) {
-            uint8_t *r0 = gfx_fb + (y + 2 * r) * GFX_FB_STRIDE + (x >> 1), *r1 = r0 + GFX_FB_STRIDE;
-            int n = *p++;
-            for (int i = 0; i < n; i++) {
-                uint8_t v = *p++, c = v & 15, len = (v >> 4) + 1;
-                if (c != 15) {
-                    if (c == 0) c = P_WINE;
-                    if (black && c == P_RED) c = P_CHIP;
-                    for (uint8_t j = 0; j < len; j++) r0[j] = r1[j] = (uint8_t)(c * 17);
-                }
-                r0 += len; r1 += len;
-            }
-        }
-        return;
-    }
     p += 2;
     for (int r = 0; r < h; r++) {
         int n = *p++, k = 0, x0 = x, y0 = y + (r * s8 >> 3), y1 = y + ((r + 1) * s8 >> 3);
@@ -159,6 +142,7 @@ static void rankS(int r, int x, int y, uint8_t col, int rh) { glyphH(RANK8[r], 8
 // a suit pip, 5x5 or 7x7, at sc times its size
 __attribute__((noinline)) static void suit5(int s, int x, int y, uint8_t col, int sc = 1) { glyphH(SUIT5[s], 5, 5, x, y, col, sc * 4); }
 __attribute__((noinline)) static void suit7(int s, int x, int y, uint8_t col, int sc = 1) { glyphH(SUIT7[s], 7, 7, x, y, col, sc * 4); }
+__attribute__((noinline)) static void suit7sh(int s, int x, int y, uint8_t col, int sc) { suit7(s, x + 1, y + 1, P_SHADE, sc); suit7(s, x, y, col, sc); }
 static uint8_t suitCol(uint8_t s) { return s < 2 ? P_RED : P_INK; }
 static void textC(int y, const char *s, uint8_t col) { gfx_text((128 - gfx_textWidth(s)) / 2, y, s, col); }
 static void textR(int xr, int y, const char *s, uint8_t col) { gfx_text(xr - gfx_textWidth(s) + 1, y, s, col); }
@@ -241,7 +225,7 @@ static int lvl(int from, int span, int max) {          // 0..max as heat climbs 
 // A face's class: 0 light (no remap: the paper is P_CARD, the black suits P_INK), else dark (THREMAP: the paper P_INK, the black suits P_SHADE).
 static uint8_t colDark;
 enum { COL_TXG = 9, COL_DATG = 11 };                  // the colours' text block (labels, names) and data block (its C_ offsets: CardIndex.h)
-__attribute__((noinline)) static void applyCol() {
+static void applyCol() {
     const uint8_t *d = card::at(CARD_TEXT + 512u * COL_DATG);
     if (!d) return;                                      // (no card, or not this frame: the next one)
     if (colDue > 1) memcpy(cop + 1, d + C_PRE + cop[0] * 5, 5);
@@ -301,7 +285,7 @@ static void drawBack(int x, int y, int w) {
     frame(x, y, w, CH, P_INK, P_WINE);
     if (w < 8) return;
     gfx_rect(x + 2, y + 2, w - 4, CH - 4, P_SHADE);           // a bone frame, a sigil line and an open eye
-    int cx = x + w / 2, cy = y + CH / 2;
+    int cx = x + (w >> 1), cy = y + CH / 2;
     gfx_vline(cx, y + 4, CH - 8, P_GOLDDK);
     if (w < 12) return;
     gfx_fillRect(cx - 4, cy - 1, 9, 3, P_CARD); gfx_fillRect(cx - 2, cy - 2, 5, 5, P_CARD);
@@ -333,7 +317,7 @@ static void drawFace(int x, int y, Card c, uint8_t fr, int w = CW, bool dim = fa
     if (gold) { rr2(x + 1, y + 1, w - 2, CH - 2, P_GOLD); gfx_fillRect(x + 3, y + 3, w - 6, CH - 6, P_CARD); }
     else gfx_fillRoundRect(x + 1, y + 1, w - 2, CH - 2, 1, P_CARD);
     hline(x + 3, y + CH - (gold ? 4 : 2), w - 6, P_SHADE);
-    if (w < CW) { if (w >= 9) suit7(c.s, x + w / 2 - 3, y + 13, suitCol(c.s)); themeFace(x, y, w, dim); return; }
+    if (w < CW) { if (w >= 9) suit7(c.s, x + (w >> 1) - 3, y + 13, suitCol(c.s)); themeFace(x, y, w, dim); return; }
     uint8_t col = suitCol(c.s);
     rank15(c.r, c.r == 8 ? x + 1 : x + 2, y + 3, col);
     suit5(c.s, x + 3, y + 17, col);
@@ -356,7 +340,7 @@ static void drawFace(int x, int y, Card c, uint8_t fr, int w = CW, bool dim = fa
     if (gold) { rr2(x + 1, y + 1, w - 2, CH - 2, P_GOLD); gfx_fillRect(x + 3, y + 3, w - 6, CH - 6, P_CARD); }
     else gfx_fillRoundRect(x + 1, y + 1, w - 2, CH - 2, 1, P_CARD);
     hline(x + 3, y + CH - (gold ? 4 : 2), w - 6, P_SHADE);
-    if (w < CW) { if (w >= 9) suit7(c.s, x + w / 2 - 3, y + 13, suitCol(c.s)); themeFace(x, y, w, dim); return; }
+    if (w < CW) { if (w >= 9) suit7(c.s, x + (w >> 1) - 3, y + 13, suitCol(c.s)); themeFace(x, y, w, dim); return; }
     uint8_t col = suitCol(c.s);
     int idx = fullFace ? idxSz : idxSz > 2 ? 2 : idxSz;                 // (an overlapped strip: at most the MEDIUM index, so the Ten fits)
     int rh = 4 + idx + (idx == 3), big = idx > 2, ss = 1 + (idx == 4), ry = 3 - big;   // the INDEX option: rank rh/4 x, suit x ss; LARGE and HUGE move the art down to the right
@@ -365,11 +349,9 @@ static void drawFace(int x, int y, Card c, uint8_t fr, int w = CW, bool dim = fa
         drawArt(COURT(c.r - 9), x + 10, y + 14, 1, c.s >= 2);
         if (!big) suit5(c.s, x + 13, y + 5, col);
     } else if (c.r == 12) {
-        suit7(c.s, x + (big ? ss * 6 + 2 : 9) + 1, y + (big ? 18 + 4 * (ss - 1) : 16) + 1, P_SHADE, 3 - ss);   // (the pip's shadow)
-        suit7(c.s, x + (big ? ss * 6 + 2 : 9), y + (big ? 18 + 4 * (ss - 1) : 16), col, 3 - ss);
+        suit7sh(c.s, x + (big ? ss * 6 + 2 : 9), y + (big ? 18 + 4 * (ss - 1) : 16), col, 3 - ss);   // (with the pip's shadow)
     } else {
-        suit7(c.s, x + 14 + big, y + 15 + 6 * big, P_SHADE);
-        suit7(c.s, x + 13 + big, y + 14 + 6 * big, col);
+        suit7sh(c.s, x + 13 + big, y + 14 + 6 * big, col, 1);
         suit5(c.s, x + 16 + big, y + 26 + big, col);
     }
     if (fullFace) cardDeco(x, y, w, gold);
@@ -515,11 +497,10 @@ static void handDraw() {
         if (i == twitchI) { x += (tp & 1) ? 2 : -2; y -= 1; }
         if (age[i] == 0) gag(Gag::Deal);
         cardShadow(x, y, CW, CH);
-        if (age[i] < 6) { drawBack(x, y, CW); continue; }
-        if (hidden[i]) { drawBack(x, y, CW); if (still) gfx_roundRect(x, y, CW, CH, 2, sel[i] ? P_GOLD : P_GLOW); continue; }   // a boss: face down
+        if (age[i] < 6 || hidden[i]) { drawBack(x, y, CW); if (age[i] >= 6 && still) gfx_roundRect(x, y, CW, CH, 2, sel[i] ? P_GOLD : P_GLOW); continue; }   // a boss: face down
         int p = age[i] - 6;
-        if (p < 3) { int w = CW * (3 - p) / 3; drawBack(x + (CW - w) / 2, y, w); continue; }
-        if (p < 5) { int w = CW * (p - 2) / 3; drawFace(x + (CW - w) / 2, y, hand[i], F_NONE, w); continue; }
+        if (p < 3) { int w = CW * (3 - p) / 3; drawBack(x + ((CW - w) >> 1), y, w); continue; }
+        if (p < 5) { int w = CW * (p - 2) / 3; drawFace(x + ((CW - w) >> 1), y, hand[i], F_NONE, w); continue; }
         uint8_t fr = sel[i] ? F_PICK : i == cur ? F_HOT : F_NONE;
         if (i == cur && cardSz) { bigI = i; continue; }  // the cursor card is drawn last, big
         int sh = 0;
@@ -584,7 +565,7 @@ static void floatTick() {
         if (f.t > 22) { f.kind = 0; continue; }
         const uint8_t *COL = wh_tabs + T_FCOL;
         const char *b = strf("%s%d", f.val < 0 ? "-" : k == 2 ? "$" : k == 6 ? "X" : "+", f.val < 0 ? -f.val : f.val);   // +4 chips or mult, $1, X2; a minus for a cost
-        int w = gfx_textWidth(b) + 4, yy = SLOT_Y + 1 - (f.t > 12 ? 12 : f.t), xx = x - w / 2;
+        int w = gfx_textWidth(b) + 4, yy = SLOT_Y + 1 - (f.t > 12 ? 12 : f.t), xx = x - (w >> 1);
         if (xx < 0) xx = 0;
         if (f.t > 17 && (f.t & 1)) continue;
         rr2(xx, yy, w, 9, COL[k]);
@@ -684,9 +665,10 @@ static void hintBar() {                               // the buttons' legend flo
 // ---------------------------------------------------------------- mascot (Wild Jack)
 static void drawMascot(int x, int y, int sc, uint8_t md) {
     const uint8_t *a = ART_MASCOT;
-    bool blink = (fc % 70) < 3;
+    int f70 = fc % 70;
+    bool blink = f70 < 3;
     if (md == 1) a = ART_MASCOT_WOW; else if (md == 2) a = ART_MASCOT_SAD; else if (blink) a = ART_MASCOT_BLINK;
-    if (md == 0 && (fc % 70) == 0) gag(Gag::Blink);
+    if (md == 0 && f70 == 0) gag(Gag::Blink);
     drawArt(a, x, y + isinK(4) / 40, sc);
 }
 
@@ -716,7 +698,7 @@ static void drawTitle() {
     textFxC(46, "WILD", 3, P_RED, P_INK, gone ? nullptr : RAMP);
     for (int i = 0; i < 6; i++) {                        // blood runs from the letters, drop by drop
         int x = 32 + i * 13 + (i & 1) * 3, len = (fc / 3 + i * 23) % 40;
-        int l = len < 14 ? len : 14, dyp = len < 14 ? 0 : (len - 14) * (len - 14) / 4;
+        int l = len < 14 ? len : 14, dyp = len < 14 ? 0 : ((len - 14) * (len - 14)) >> 2;
         gfx_vline(x, 67, l / 2 + 1, P_RED);
         if (len >= 14 && 68 + dyp < 92) gfx_fillRect(x, 68 + dyp, 1, 2, P_RED);
     }
@@ -734,7 +716,7 @@ static void drawTitle() {
     drawTitleMenu();
 }
 
-static void drawPlay() {
+__attribute__((noinline)) static void drawPlay() {
     drawFelt();
     drawHud();
     handDraw();                                        // (the pause menu is drawPause: it covers the hand)
@@ -812,7 +794,7 @@ static void patter(const char *s) {
     textOut(37, 19, b, P_CARD);
     textOut(37, 29, s + k + (s[k] != 0), P_CARD);
 }
-static void drawShop() {
+__attribute__((noinline)) static void drawShop() {
     drawFelt();
     drawTopBar();
     // Wild Jack, big, and his patter
@@ -835,7 +817,7 @@ static void drawShop() {
         rr3(x + 1, y + 2, tw, th, P_INK);
         if (id == 255) {
             gfx_roundRect(x, y, tw, th, 3, on ? P_GLOW : P_GREY);
-            textOut(x + tw / 2 - 14, y + th / 2 - 4, cardText(0, TX_SOLD), P_SHADE);
+            textOut(x + (tw >> 1) - 14, y + (th >> 1) - 4, cardText(0, TX_SOLD), P_SHADE);
             continue;
         }
         rr3(x, y, tw, th, on ? P_GOLD : P_GOLDDK);
@@ -847,7 +829,7 @@ static void drawShop() {
         int pr = shopMode ? jprice(id) / 2 : jprice(id);
         const char *s = strf("$%d", pr);
         rr2(x + (tw - 20) / 2, ay + a + 2, 20, 10, P_INK);
-        gfx_text(x + tw / 2 - gfx_textWidth(s) / 2, ay + a + 4, s, shopMode ? P_GLOW : money >= pr ? P_GOLD : P_RED);
+        gfx_text(x + (tw >> 1) - (gfx_textWidth(s) >> 1), ay + a + 4, s, shopMode ? P_GLOW : money >= pr ? P_GOLD : P_RED);
     }
     // what the highlighted card does: two lines floating on the backdrop
     const uint8_t sid = shopMode ? jokers[ownSel] : shopSel < shopN ? shopOffer[shopSel] : 255;
@@ -873,7 +855,7 @@ static void drawShop() {
         if (on) gfx_roundRect(x - 1, 117, 62, 12, 3, (fc & 8) ? P_GLOW : P_WINE);   // a rim breathes round the chosen button
         rr2(x, 118, 60, 10, on ? P_GOLD : P_INK);
         const char *b = cardText(0, TX_REROLL + i);
-        gfx_text(x + 30 - gfx_textWidth(b) / 2, 120, b, on ? P_INK : P_TEXT);
+        gfx_text(x + 30 - (gfx_textWidth(b) >> 1), 120, b, on ? P_INK : P_TEXT);
     }
 }
 
@@ -906,7 +888,7 @@ static void drawEnd() {
         textCF(66, 4, TX_E_LIVED, round_, 0, P_TEXT);
         const int8_t *PX = (const int8_t *)(wh_tabs + T_PXYS), *PY = PX + 5, *PS = PX + 10;
         for (int i = 0; i < 5; i++) {                    // the house of cards, fallen
-            int y = PY[i] + (stT < 20 ? (20 - stT) * (20 - stT) / 4 : 0);
+            int y = PY[i] + (stT < 20 ? ((20 - stT) * (20 - stT)) >> 2 : 0);
             cardShadow(PX[i], y, CW, CH);
             if (i & 1) drawBack(PX[i], y, CW); else { Card c = { (uint8_t)(i * 2), (uint8_t)(i & 3) }; drawFaceSheared(PX[i], y, c, F_NONE, PS[i]); }
         }

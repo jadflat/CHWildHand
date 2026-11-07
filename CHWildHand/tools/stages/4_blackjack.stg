@@ -1,0 +1,182 @@
+; BLACKJACK DASH (a tie is a push): A hits, B stands. Stand on 17..21 and beat the dealer (his upcard + a hidden card, shown at the stand) to bank
+; the hand (+3 s, a 21 +5 s and a gold burst); bust, stand low or lose to him: a miss. 4 banked hands win; 3 misses or the
+; clock lose. The clock drains quicker with every banked hand.
+.stage BLACKJACK DASH
+.rule A HIT  B STAND
+.rule UP DOUBLE DN SPLIT
+.score HANDS %d/4  MISS %d/3
+.str BLANK
+.str LOSE LOSE
+.str WIN WIN!
+.str BUST BUST!
+.str DLR DEALER
+.str DT = %d
+.str YOU TOTAL %d
+.str H1 A HIT        B STAND
+.str H2   DOUBLE     SPLIT
+.reg CK r10         ; the clock in frames (600 = 20 s)
+.reg N r11          ; cards in the hand (cards in r16..r22: ranks 0..12 = 2..A)
+.reg S r12          ; the best total (an ace counts 11 until it must be 1)
+.reg AC r13         ; aces still counted as 11
+.reg DU r14         ; the dealer's upcard
+.reg DV r15         ; its value
+.reg K r23          ; cards still to draw
+.reg T r24          ; frames the result stays
+.reg RES r25        ; 0 none, 1 bust, 2 win, 3 lost, 4 push
+.reg DT r26         ; the dealer's total
+.reg M r4           ; the stake: 2 after a double (a win banks 2 hands, a loss costs 2)
+.reg P r5           ; the next card to deal (rank + 1), 0 = random
+.reg SP r6          ; a split's second hand: its first card (rank + 1), 0 = none
+.reg H r7           ; the dealer's hold card
+.reg C0 r16
+.reg C1 r17
+.reg X r27
+.reg Y r28
+.reg V r29
+.reg I r30
+.reg C r31          ; -1 (SUB in init; the TEXT x of the score and clock lines)
+
+.init
+    SET CK, 600
+    SET T, 1
+    SUB C, C, 1
+
+.update
+    JEQ T, 0, play
+    DJNZ T, out
+    AND P, SP, 15               ; a new hand (a split's waiting hand first): a new upcard
+    SHR SP, SP, 4
+    MUL RES, P, 4               ; a split's next hand (4P: shown as 4, the same dealer, his hold card stays up); a new hand 0
+    JNE P, 0, deal
+    DRAW H                   ; his hold card (rank 0..12 = 2..A)
+    DRAW DU
+    ADD DV, DU, 2
+    MIN DV, DV, 10
+    JLT DU, 12, deal
+    SET DV, 11
+    JMP deal
+play:
+    JEQ LV, 0, nodl
+    SUB LV, LV, 1
+nodl:
+    DJNZ CK, live
+    LOSE
+live:
+    EDGE X, BTN_B
+    JNE X, 0, stand
+    JNE N, 2, nospl             ; a double or a split: two cards only
+    EDGE X, BTN_UP              ; double: one card, then stand
+    JEQ X, 0, nodbl
+    SET M, 2
+    JMP one
+nodbl:
+    EDGE X, BTN_DOWN            ; split a pair: this hand plays one card, the other waits
+    JEQ X, 0, nospl
+    JNE C0, C1, nospl
+    JGE SP, 16, nospl           ; waiting hands: base-16 digits (rank + 1), up to 2 (3 hands)
+    ADD P, C0, 1
+    MUL SP, SP, 16
+    ADD SP, SP, P
+deal:
+    SET N, 0                    ; two cards
+    SET S, 0
+    SET AC, 0
+    SET K, 2
+    SET M, 1
+    SET LV, 20                  ; the deal: the cards are uncovered left to right
+    JMP hit
+nospl:
+    EDGE X, BTN_A
+    JEQ X, 0, out
+one:
+    SET K, 1
+hit:
+    JGE N, 7, out               ; (the cards squeeze together to fit)
+    DRAW X
+    JEQ P, 0, got
+    SUB X, P, 1
+    SET P, 0
+got:
+    ADD Y, N, 16
+    ST Y, X
+    ADD N, N, 1
+    ADD V, X, 2
+    MIN V, V, 10
+    JLT X, 12, addv
+    SET V, 11
+    ADD AC, AC, 1
+addv:
+    ADD S, S, V
+chk:
+    JLT S, 22, fine
+    JEQ AC, 0, bust
+    SUB S, S, 10
+    SUB AC, AC, 1
+    JMP chk                     ; (an ace on a soft 21 can need two)
+fine:
+    DJNZ K, hit
+    JEQ M, 2, stand
+    END
+stand:
+    ADD DT, H, 2                ; his hold card's value, a ten for J Q K, 11 for an ace
+    MIN DT, DT, 10
+    JLT H, 12, hv
+    SET DT, 11
+hv: ADD DT, DT, DV
+    MOD DT, DT, 22              ; two aces (22) count as 0, then 17 (the MAX)
+    MAX DT, DT, 17
+    SET T, 40
+    SET RES, 5
+    JLT S, DT, lost
+    JEQ S, DT, push             ; a tie is a push: no hand, no miss
+won:
+    ADD W, W, M
+    SET RES, 2
+    ADD CK, CK, 90
+    SFX SFX_TADA, 0
+    JNE S, 21, plain
+    ADD CK, CK, 60
+    BURST 64, 90, 14, GOLD, GLOW, 40
+plain:
+    JLT W, 4, out
+    WIN
+bust:
+    SET RES, 1
+    SET T, 40
+lost:
+    ADD L, L, M
+    SFX SFX_WAH, 0
+    JLT L, 3, out
+    LOSE
+push:
+    SET RES, 4
+out:
+
+.draw
+    TEXT C, 26, $SCORE, TEXT, W, L
+    DIV X, CK, 6
+    FRECT 4, 37, X, 2, GOLD
+    CARD 46, 45, DU, DU, GOLDDK
+    SET Y, 0                    ; his hold card face down until the stand, then it flips over (w: 0 back .. 32 face)
+    JLT RES, 2, hole
+    TEXT 86, 52, $DT, GOLD, DT, 0
+    SUB Y, 40, T
+    MUL Y, Y, 2
+    MIN Y, Y, 32
+hole:
+    FLIP 64, 45, H, Y, GOLDDK
+
+    SUB X, 20, LV               ; the deal: the cards turn over left to right (the width grows, 12 a card)
+    MUL X, X, 6
+    BJROW 80, N, SP, X          ; the hand and the waiting ones, centred
+tot:
+    TEXT 4, 111, $H1, GREY, 0, 0      ; the buttons, always on screen: A and the up arrow, B and the down arrow, in two columns
+    TEXT 4, 119, $H2, GREY, 0, 0
+    LINE 5, 124, 8, 121, GREY         ; up arrow
+    LINE 8, 121, 11, 124, GREY
+    LINE 71, 121, 74, 124, GREY       ; down arrow
+    LINE 74, 124, 77, 121, GREY
+    TEXT C, 103, $YOU, TEXT, S, 0
+    AND V, RES, 3               ; the result line: RES & 3 picks the blank (0, 4), LOSE (1, 5) or WIN (2)
+    ADD V, V, $BLANK
+    TEXT C, 69, V, GOLD, 0, 0

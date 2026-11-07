@@ -100,7 +100,7 @@ static uint8_t sett[14];
 #define bgSel sett[12]                                   // BG: 0 AUTO, 1 SCENE, 2.. a style (Scene.h sceneFg); BG HOLD: 0 STAGE (a pick lasts the night), 1 ALWAYS
 #define bgHold sett[13]
 static bool saveDue, saveFlag, hasSave;
-static uint8_t cardDue;                                   // frames until the settings go to the card too (card::putSettings; each change restarts the count)
+static uint8_t cardDue;                                   // frames until the settings go to the card too (card::putSave; each change restarts the count)
 static uint8_t note;
 static uint8_t moodT;                                  // the shop reacted to this note (Gfx.h); cleared by a press
 
@@ -180,8 +180,8 @@ static void fillSave() {
     for (int i = 0; i < 9; i++) sv.lv[i] = (uint8_t)(hlv[i] | (i < JMAX ? cnt[i] << 4 : 0));
     packSettings(); sv.dealerBase = dealerBase;
 }
-static void saveRun() { fillSave(); saveDue = true; saveFlag = true; }
-static void endSave() { fillSave(); saveFlag = false; saveDue = true; }
+static void saveRun() { fillSave(); saveDue = true; saveFlag = true; cardDue = 20; }
+static void endSave() { fillSave(); saveFlag = false; saveDue = true; cardDue = 20; }
 static void saveSettings() { packSettings(); sv.turboHi = turboHi; saveFlag = hasSave; saveDue = true; cardDue = 20; }
 #endif
 
@@ -487,10 +487,14 @@ static void loadSave() {
     memset(&sv, 0, sizeof sv);
     sv.music = 1;
 #ifndef PERF_BUILD
-    save::load(MAGIC, 2, sv, &flag);                 // (flag stays 0 if there is none; an empty save decodes to the defaults)
-    const uint8_t *cs = card::settings();            // the card's settings, if it has good ones, win: another game may have taken the flash page
+    const bool had = save::load(MAGIC, 2, sv, &flag);   // (flag stays 0 if there is none; an empty save decodes to the defaults)
+    uint8_t m[sizeof sv + 1];                        // the card's copy: restores a save the flash page lost; its settings win either way (another game may have taken the page)
+    if (card::getSave(m, sizeof m)) {
+        SaveData c; memcpy(&c, m, sizeof c);
+        if (had) { sv.music = c.music; sv.fx = (uint8_t)((sv.fx & 0xF0) | (c.fx & 15)); sv.pad = c.pad; sv.hi = (sv.hi & 255) | (c.hi & ~255); }
+        else { memcpy(&sv, m, sizeof sv); flag = m[sizeof sv]; saveFlag = flag; saveDue = true; }
+    }
     uint32_t cp = (uint32_t)sv.hi >> 8;
-    if (cs) { sv.music = cs[0]; sv.fx = (uint8_t)((sv.fx & 0xF0) | cs[1]); sv.pad = cs[2]; }   // (the COLORS options are in the flash save only: sv.hi)
     for (int k = 1; k < 6; k++, cp >>= 4) cop[k] = cp & 15;   // (the save's check keeps them as written: in range)
     bgSel = cp & 7; bgHold = cp >> 3;
     colDue = 1;                                      // (their colours, at the next frame)
@@ -503,6 +507,7 @@ static void loadSave() {
 }
 
 void loop() {
+    if (chgame.justPressed(SELECT_BUTTON)) { cop[0] = (uint8_t)((cop[0] + 1) % OPTM[6]); colDue = 2; saveSettings(); playSfx(Sfx::Move); }   // SELECT: the next colour THEME
     if (chgame.justPressed(START_BUTTON)) {
         if (state == PAUSED) state = (State)pauseFrom;
         else if ((state | 1) != WON) { pauseFrom = state; state = PAUSED; pauseSel = 0; note = 0; }   // (the end screens count their frames to a prompt: no pause there)
@@ -535,11 +540,15 @@ void loop() {
     }
 #ifndef PERF_BUILD
     if (saveDue) {
-        saveDue = false;
+        saveDue = false; gfx_wait();                              // (the flash page buffer is the flush scratch: at the table the wait above was skipped)
         const bool ok = save::store(MAGIC, 2, sv, saveFlag ? 1 : 0);   // (false exactly when save::available() is false after it)
         hasSave = saveFlag && ok;
     }
-    if (cardDue && !--cardDue) card::putSettings(sv.music, sv.fx & 15, sv.pad);                  // the settings, a little after the last change, also on the card (one block write; silent if it fails)
+    if (cardDue && !--cardDue) {
+        packSettings(); saveDue = true;                           // (again: a new THEME's options are read in the frame after the change, so the first pack missed them)
+        uint8_t m[sizeof sv + 1]; memcpy(m, &sv, sizeof sv); m[sizeof sv] = saveFlag;
+        card::putSave(m, sizeof m);                              // the whole save, alternating records (a torn write keeps the older)
+    }                  // the settings, a little after the last change, also on the card (one block write; silent if it fails)
 #endif
 #if defined(PERF_LEAN) || defined(PERF_BUILD)
     draw();                                                     // (the perf tool runs with the card in)

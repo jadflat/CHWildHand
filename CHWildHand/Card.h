@@ -13,8 +13,8 @@ const uint8_t *at(uint32_t off);                   // the byte at off and the re
 uint8_t *hold(uint32_t off, uint16_t n);           // n bytes into a 512 B slot taken out of the cache (nullptr: the card has gone) ...
 void release();                                    // ... and back into it
 bool copyDirect(uint8_t *dst, uint32_t off, uint16_t n);   // n bytes (may span blocks), before the frame is drawn; the cache keeps its pictures
-const uint8_t *settings();                         // the settings kept on the card (3 packed bytes, in the scratch buffer), nullptr if none or not good; before the first frame is drawn
-bool putSettings(uint8_t music, uint8_t fx, uint8_t pad);   // keeps 3 packed bytes in the DAT's last block (one block write, a few ms); false: not kept
+bool getSave(uint8_t *dst, uint8_t n);               // the save mirror (two alternating records after the settings block): the newest good one; false: none
+bool putSave(const uint8_t *p, uint8_t n);         // writes the next record (n <= 64, a few ms); false: not kept
 }  // namespace card
 
 // A reader of run-length picture data: from flash (fromCard false), or from the card a block at a time

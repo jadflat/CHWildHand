@@ -207,7 +207,7 @@ static void drawBsel() {
     prompt2(10, 117, 110, TX_T_PLAY);
 }
 #endif
-static void drawExtra() {
+__attribute__((noinline)) static void drawExtra() {
     if (state == DEAL) drawDeal();
     else if (state == BONUS) drawBonusShow();
     else if (state == MINI) drawMini();

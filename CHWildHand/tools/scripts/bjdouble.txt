@@ -1,0 +1,31 @@
+cal
+say Z 99
+wait 30
+tap DOWN
+wait 5
+tap A
+wait 12
+tap UP
+wait 6
+tap A
+wait 215
+tap A
+wait 32
+snap d00_deal
+tap UP
+wait 12
+snap d01_double
+wait 100
+snap d02_after
+tap UP
+wait 12
+tap DOWN
+wait 12
+snap d03_split
+tap A
+wait 10
+tap B
+wait 20
+snap d04_split_stand
+wait 100
+snap d05_split2

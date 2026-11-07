@@ -1,0 +1,9 @@
+wait 60
+snap th0
+tap SELECT
+wait 10
+snap th1
+tap SELECT
+wait 10
+snap th2
+say A

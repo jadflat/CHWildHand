@@ -289,6 +289,8 @@ __attribute__((noinline)) static void freshRun(uint8_t m, uint8_t r, uint8_t cas
 }
 static void newRun() {
     freshRun(M_RUN, 0, 4);
+    for (int i = 0; i < 9; i++) hlv[i] = (sv.lv[i] & 15) / 2 > LVMAX ? LVMAX : (sv.lv[i] & 15) / 2;   // what a death (or a win) leaves: half of each hand's level, rounded down,
+    if (sv.nJok) addJok(sv.jok[0] % NJOK);                // and the first wild card, kept (the save still holds the last run)
 #ifndef PERF_LEAN
     runOff = (uint8_t)((runOff + 1) % NSTAGE);           // each run starts the stage songs one on
 #endif
@@ -323,7 +325,7 @@ static void startBonus() {
     bonusGoal = g * 3 / 4;
     playSfx(Sfx::Whoosh);
 }
-static void bonusGo() {
+__attribute__((noinline)) static void bonusGo() {
     if (miniK != MK_SPEED) { miniStart(); return; }
     timed = true; bonusOn = true; tLeft = BONUS_FRAMES;
     startRound();

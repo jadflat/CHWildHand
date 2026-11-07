@@ -1,0 +1,47 @@
+cal
+say Z 99
+wait 30
+tap DOWN
+wait 5
+tap A
+wait 12
+tap UP
+wait 6
+snap bj00_list
+tap A
+wait 215
+snap bj01_intro
+tap A
+wait 12
+wait 20
+snap bj02_deal
+tap A
+wait 10
+snap bj03_hit
+tap A
+wait 10
+snap bj04_hit2
+tap B
+wait 15
+snap bj05_stand
+wait 80
+snap bj06_next
+tap B
+wait 15
+snap bj07_stand2
+wait 120
+snap bj08_hand3
+say I 102
+tap B
+wait 15
+snap bj09_cheat
+wait 100
+tap B
+wait 15
+wait 100
+tap B
+wait 15
+wait 100
+snap bj10_end
+wait 60
+snap bj11_after

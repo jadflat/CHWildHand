@@ -173,20 +173,9 @@ bool copyDirect(uint8_t *dst, uint32_t off, uint16_t n) {
     return true;
 }
 
-// ---- the settings block: CARD_SET, the DAT's last block (make_card.py writes it as 0xFF), keeps the pause menu's settings where
-// another game's save cannot overwrite them. Five bytes: 'W', the three packed bytes, a check byte; the rest stays 0xFF.
-// The library's driver only reads, so the one write is done here: a single-block write (CMD24) on the same SPI1 set-up as
-// SdSpi.cpp (HypeRunner's clean-room driver, MIT; the helpers below are cut down from it). It touches only a block inside the file's
-// own cluster runs, and only one that still holds the 0xFF fill or an earlier settings block. Nothing reads the block through the
-// slots (the load reads it into the first slot and drops its tag, the read-back uses the scratch buffer), so no slot holds a stale copy.
-static uint8_t chk(const uint8_t *h) { return (uint8_t)(h[1] + h[2] + h[3] + 0xA5); }
-static bool readSet(uint8_t i) { tag[i] = 0xffff; return readBlk(CARD_SET >> 9, slotBuf(i)); }      // into slot i (the scratch one: SLOTS)
-
-const uint8_t *settings() {                         // the three bytes, if the block holds a good set
-    const uint8_t *h = buf[0];                       // (the first slot: this is read at boot, and when the debug hook reloads, mid-frame)
-    return open_ && readSet(0) && h[0] == 'W' && h[4] == chk(h) ? h + 1 : nullptr;       // (any three bytes decode to a valid setting: loadSave() takes them modulo)
-}
-
+// ---- writes: the library's driver only reads, so the save mirror's blocks are written here: a single-block write (CMD24) on the same SPI1
+// set-up as SdSpi.cpp (HypeRunner's clean-room driver, MIT; the helpers below are cut down from it). It touches only a block inside the file's
+// own cluster runs, and only one that still holds the 0xFF fill or an earlier record.
 #ifdef CHSIM
 // the simulator's card is read-only (CHSd/host/sd_host.cpp): with $WH_CARDW set the block goes into the file $CHSD_CARD names
 // (a plain file: the DAT itself), for the tests; otherwise the write is refused
@@ -245,14 +234,43 @@ static bool writeBlk(uint32_t k, const uint8_t *src) {
 }
 #endif
 
-__attribute__((noinline)) bool putSettings(uint8_t music, uint8_t fx, uint8_t pad) {   // after gfx_wait(), before the flush; false: not kept on the card (silently: the flash save has them)
+// ---- the save mirror: the two blocks after CARD_SET hold the whole save (SaveData + its flag) as two alternating records, each with a
+// generation and a checksum, so a torn write leaves the other one; getSave() restores a save the flash page lost. A block: gen (4, LE),
+// 'S', n, n payload bytes, 2 checksum bytes, the 0xFF fill. A block is only written if it holds the fill or a record (the file's own).
+static uint32_t gen_; static uint8_t next_;
+static uint16_t sum(const uint8_t *r, uint8_t n) { uint16_t s = 0; for (uint8_t i = 0; i < n + 6; i++) s = (uint16_t)(s * 31 + r[i] + 1); return s; }
+static bool good(const uint8_t *r, uint8_t n) { return r[4] == 'S' && r[5] == n && sum(r, n) == (uint16_t)(r[6 + n] | r[7 + n] << 8); }
+static const uint32_t SAVE0 = CARD_SET >> 9;
+
+bool getSave(uint8_t *dst, uint8_t n) {             // the newest good record's n bytes into dst; false: none (or no card)
+    bool got = false;
+    gen_ = 0; next_ = 0;
+    for (uint8_t k = 0; open_ && k < 2; k++) {
+        const uint8_t *r = buf[0];
+        tag[0] = 0xffff;
+        if (!readBlk(SAVE0 + k, buf[0]) || !good(r, n)) continue;
+        const uint32_t g = r[0] | r[1] << 8 | (uint32_t)r[2] << 16 | (uint32_t)r[3] << 24;
+        if (!got || g > gen_) { gen_ = g; next_ = k ^ 1; memcpy(dst, r + 6, n); got = true; }
+    }
+    return got;
+}
+
+__attribute__((noinline)) bool putSave(const uint8_t *p, uint8_t n) {   // n <= 64; after gfx_wait(), before the flush; false: not kept (silently: the flash has it)
     if (!open_ || noWrite) return false;
-    uint8_t *b = gfx_chunkScratch(), h[5] = { 'W', music, fx, pad };
-    h[4] = chk(h);
-    bool ok = readSet(SLOTS);
-    ok = ok && (b[0] == 'W' || (b[0] & b[1] & b[2] & b[3]) == 0xFF);              // only over the fill or an earlier set: the block is ours
-    if (ok) { memcpy(b, h, 5); ok = writeBlk(CARD_SET >> 9, b) && readSet(SLOTS) && !memcmp(b, h, 5); }
-    if (!ok) { noWrite = true; open_ = sd::init(); }    // a card left mid-command needs its CMD0 (the library's note); gone: the retry in loop() finds it
+    uint8_t *b = gfx_chunkScratch(), r[72];
+    const uint32_t blk = SAVE0 + next_;
+    tag[SLOTS] = 0xffff;
+    bool ok = readBlk(blk, b) && (b[4] == 'S' || (b[0] & b[1] & b[2] & b[3]) == 0xFF);
+    if (ok) {
+        const uint32_t g = ++gen_;
+        for (uint8_t i = 0; i < 4; i++) r[i] = (uint8_t)(g >> 8 * i);
+        r[4] = 'S'; r[5] = n; memcpy(r + 6, p, n);
+        const uint16_t s = sum(r, n);
+        r[6 + n] = (uint8_t)s; r[7 + n] = (uint8_t)(s >> 8);
+        memset(b, 0xFF, 512); memcpy(b, r, n + 8);
+        ok = writeBlk(blk, b) && readBlk(blk, b) && !memcmp(b, r, n + 8);
+    }
+    if (ok) next_ ^= 1; else { noWrite = true; open_ = sd::init(); }
     return ok;
 }
 

@@ -71,7 +71,13 @@ SHUF = [
     7, 2, 9, -30, 26, 10, 0, 40, 3, 0, 8, 40,       # a breeze: cards float up in waves, weaving, and rain back down
 ]
 # the game's own tables (Gfx.h ...), the same bytes as the arrays they replace: T_<name>
+VMOPS = [
+    0, 9, 10, 10, 10, 10, 10, 10, 8, 10, 10, 10, 9, 10, 9, 9, 2,     # END SET ADD SUB MUL DIV MOD AND DRAW SHR MIN MAX RND SIN ABS LD ST
+    1, 3, 3, 3, 3, 9, 9, 9,                                         # JMP JEQ JNE JLT JGE DJNZ IN EDGE
+    2, 1, 6, 0, 0,                                                  # SFX FLASH BURST WIN LOSE
+    5, 5, 5, 4, 4, 5, 4, 6, 5, 5, 3, 2, 4]                          # FRECT RECT RRECT FCIRC CIRC LINE HLINE TEXT CARD SUIT HEAD HAND BJROW
 EXTRA = [
+    ('VMOPS', VMOPS),   # StageVM.h: each opcode's operands (bit 3 a destination register first, bits 0-2 the values)
     ('PM', PM),
     ('SHUF', SHUF),   # Dealers.h Shuf, 12 bytes a style
     ('BGORD', BGORD),   # Bonus.h drawPauseMenu (TX_ values: a static_assert there)
