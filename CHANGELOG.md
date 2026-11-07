@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.3.33
+
+- BLACKJACK on the title: play Blackjack Dash on its own, outside the bonus stages; B returns to the title.
+- Small code trims.
+
 ## V1.3.32
 
 - Blackjack Dash: an ace drawn on a soft 21 no longer leaves a total of 22 that wins.

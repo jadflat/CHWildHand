@@ -262,12 +262,12 @@ static void drawPauseMenu() {
 }
 static void drawTitleMenu() {
     int n = titleN();
-    int y0 = n == 4 ? 96 : n == 3 ? 102 : 107, h = n == 4 ? 8 : 9;
+    int y0 = 120 - 6 * n;
     for (int i = 0; i < n; i++) {
-        int y = y0 + i * h, k = titleK(i);
-        const char *t = cardText(4, TX_T_CONT + k);
+        int y = y0 + i * 8, k = titleK(i);
+        const char *t = cardText(k == 4 ? STAGE_TXG : 4, k == 4 ? 4 : TX_T_CONT + k);
         if (!k) t = strf(t, sv.round_ + 1);
-        if (titleSel == i) { selRow(18, y - 1, 92, h, (fc & 16) ? P_RED : P_WINE, 22, y, P_TEXT); }
+        if (titleSel == i) { selRow(18, y - 1, 92, 8, (fc & 16) ? P_RED : P_WINE, 22, y, P_TEXT); }
         textC(y, t, P_TEXT);
     }
 }
@@ -368,7 +368,7 @@ static bool leadHook(char cmd, const char *a) {
     case 'I': if (n >= 100) { cheatK(n); return true; }     // I 100: a sure win for the next play (the practice test); 101, 102: the newer stages (Minis.h cheatK)
               for (int i = 0; i < 9; i++) hlv[i] = (uint8_t)(n > LVMAX ? LVMAX : n); return true;
     case 'F': fxLow = n; return true;
-    case 'V': loadSave(); state = TITLE; titleSel = 0; mode = M_RUN; timed = bonusOn = false; return true;   // power cycle (simsave)
+    case 'V': loadSave(); toTitle(); return true;   // power cycle (simsave)
     case 'A': { char b[112]; snprintf(b, sizeof b, "STATE music=%d fx=%d save=%d round=%d money=%ld nj=%d lv1=%d turbo=%ld col=%ld th=%d\n", musicOn, fxLow, hasSave, round_, (long)money, nJok, hlv[1], (long)turboHi, (long)colPack(), cop[0]); dbg::print(b); return true; }
 #endif
     }

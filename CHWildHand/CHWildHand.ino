@@ -180,9 +180,10 @@ static void fillSave() {
     for (int i = 0; i < 9; i++) sv.lv[i] = (uint8_t)(hlv[i] | (i < JMAX ? cnt[i] << 4 : 0));
     packSettings(); sv.dealerBase = dealerBase;
 }
-static void saveRun() { fillSave(); saveDue = true; saveFlag = true; cardDue = 20; }
-static void endSave() { fillSave(); saveFlag = false; saveDue = true; cardDue = 20; }
-static void saveSettings() { packSettings(); sv.turboHi = turboHi; saveFlag = hasSave; saveDue = true; cardDue = 20; }
+__attribute__((noinline)) static void saveGo(bool f) { saveFlag = f; saveDue = true; cardDue = 20; }
+static void saveRun() { fillSave(); saveGo(true); }
+static void endSave() { fillSave(); saveGo(false); }
+static void saveSettings() { packSettings(); sv.turboHi = turboHi; saveGo(hasSave); }
 #endif
 
 static void shopRoll() {                                 // three offers, four on the night after a hex is beaten: none owned, none twice
@@ -194,6 +195,7 @@ static void shopRoll() {                                 // three offers, four o
         shopOffer[i] = id;
     }
 }
+static void runOn() { mode = M_RUN; timed = bonusOn = false; }
 static void openShop() {
     timed = bonusOn = false;
     shopRoll();
@@ -217,7 +219,7 @@ static void removeSelected(int &count, Card *out) {
 static int selCount() { int n = 0; for (int i = 0; i < nHand; i++) if (sel[i]) n++; return n; }
 
 static void continueRun() {
-    mode = M_RUN; timed = bonusOn = false;
+    runOn();
     round_ = sv.round_ > 99 ? 99 : sv.round_; money = sv.money; dealerBase = sv.dealerBase % NDEAL;
     clearJok(); nJok = sv.nJok > JMAX ? JMAX : sv.nJok;
     for (int i = 0; i < nJok; i++) { jokers[i] = (i < 3 ? sv.jok[i] : sv.jok2[i - 3]) % NJOK; cnt[i] = sv.lv[i] >> 4; }
@@ -229,7 +231,7 @@ static int titleN() {
 #ifdef PERF_LEAN
     return 2;
 #else
-    return 3 + hasSave;
+    return 4 + hasSave;
 #endif
 }
 static int titleK(int sel) {
@@ -241,7 +243,7 @@ static int titleK(int sel) {
 }
 #ifndef PERF_LEAN
 // the title's BONUS: the stage select (BSEL), then a bonus stage played alone as practice: no run, no save, no shop
-static void practiceBack() { timed = bonusOn = false; mode = M_RUN; boss = 255; x2Pend = penalty = false; note = 0; state = BSEL; }
+static void practiceBack() { runOn(); boss = 255; x2Pend = penalty = false; note = 0; state = BSEL; if (bselSel == 255) { bonusPractice = 0; state = TITLE; } }   // (bselSel 255: the title's BLACKJACK, back to the title)
 static void practiceStart(uint8_t k) {
     freshRun(M_RUN, 3, 4); dealer = rnd() % NDEAL;
     forceMini = k; startBonus(); forceMini = -1;
@@ -253,7 +255,7 @@ static void practiceStart(uint8_t k) {
 #define CONTINUE_RUN() continueRun()
 #endif
 static void dealerReact(bool good);
-__attribute__((noinline)) static void toTitle() { state = TITLE; titleSel = 0; mode = M_RUN; timed = bonusOn = false; }   // (a run or the turbo is over)
+__attribute__((noinline)) static void toTitle() { state = TITLE; titleSel = 0; runOn(); }   // (a run or the turbo is over)
 static void loadSave();
 static void miniUpdate(bool up, bool dn, bool lf, bool rt, bool a);
 
@@ -329,7 +331,7 @@ static void update() {
 #ifdef PERF_LEAN
             if (k == 1) newRun(); else startTurbo();
 #else
-            if (k == 0) CONTINUE_RUN(); else if (k == 1) newRun(); else if (k == 2) { bonusPractice = true; bselSel = 0; state = BSEL; } else startTurbo();
+            if (k == 0) CONTINUE_RUN(); else if (k == 1) newRun(); else if (k == 2) { bonusPractice = true; bselSel = 0; state = BSEL; } else if (k == 4) { bonusPractice = true; bselSel = 255; practiceStart(MK_VM + 4); } else startTurbo();
 #endif
         }
         break;
@@ -375,7 +377,7 @@ static void update() {
         if (timer < 200) { if (a && timer > 10) timer = 200; }
         else if (a) { bonusGo(); playSfx(Sfx::Shuffle); }
 #ifndef PERF_LEAN
-        else if (bb && bonusPractice) { state = BSEL; playSfx(Sfx::Move); }
+        else if (bb && bonusPractice) { practiceBack(); playSfx(Sfx::Move); }
 #endif
         else if (bb) { openShop(); playSfx(Sfx::Move); }
         break;

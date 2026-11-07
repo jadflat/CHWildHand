@@ -712,7 +712,9 @@ static void drawTitle() {
     gfx_vline(109, 66, 5, P_RED);
     candles(-8);
     textOut(127 - gfx_textWidth(WH_VER), 0, WH_VER, P_GREY);   // the version, top right
-    if (titleN() < 4) textCT(92, 4, TX_T_TAG, P_GOLD);   // (with a save the four lines need the room)
+#ifdef PERF_LEAN
+    textCT(92, 4, TX_T_TAG, P_GOLD);
+#endif
     drawTitleMenu();
 }
 
@@ -961,13 +963,14 @@ static void draw() {
     heatTick();
     palTick();
     // shake: from big hands, and a constant rumble near the top of the meter
+    const bool pr = state == PLAY || state == RESULT;
     int amp = shakeT ? shakeAmp : lvl(190, 60, 2);
     if (shakeT) shakeT--;
     if (fxLow) amp = 0;
-    if (amp && (state == PLAY || state == RESULT)) { ox = fr(2 * amp + 1) - amp; oy = fr(2 * amp + 1) - amp; } else ox = oy = 0;
+    if (amp && pr) { ox = fr(2 * amp + 1) - amp; oy = fr(2 * amp + 1) - amp; } else ox = oy = 0;
     // ambient sparks once it is hot
     int sp = lvl(150, 100, 6);
-    if (sp && (state == PLAY || state == RESULT) && (frand() & 15) < sp) drift((frand() & 1) ? fr(12) : 116 + fr(12), 127, -29, P_GOLD, P_GLOW, 24);
+    if (sp && pr && (frand() & 15) < sp) drift((frand() & 1) ? fr(12) : 116 + fr(12), 127, -29, P_GOLD, P_GLOW, 24);
     switch (state) {
     case TITLE: drawTitle(); break;
     case SHOP: drawShop(); break;
@@ -978,7 +981,7 @@ static void draw() {
     default: if (showLv) drawOverlay(); else drawPlay(); break;
     }
     partsDraw(state == WON ? 0 : 2);
-    if (shakeT && !fxLow && (state == RESULT || state == PLAY)) { uint8_t c = (shakeT & 2) ? P_RED : P_GOLD; gfx_rect(0, 0, 128, 128, c); }   // a big hand flashes the frame
+    if (shakeT && !fxLow && pr) { uint8_t c = (shakeT & 2) ? P_RED : P_GOLD; gfx_rect(0, 0, 128, 128, c); }   // a big hand flashes the frame
     if (stT < 10 && (state == TITLE || state == SHOP || state == OVER || state == WON)) wipe(stT);
 }
 
